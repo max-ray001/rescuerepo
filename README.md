@@ -95,6 +95,7 @@ The goal is to make it easier to turn any repo, no matter how old, and turn it i
 * [FastAPI](https://fastapi.tiangolo.com/)
 * [React](https://reactjs.org/)
 * [LangChain](https://docs.langchain.com/docs/)
+* [Supabase](https://supabase.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -118,11 +119,33 @@ Here is a list of prerequisites you need to install before you can start using t
 
 1. First, Fork/Clone the repository.
 
-2. Export your OpenAI API key
-
+2. Export the following API keys:
+  
+  your [OpenAI API key](https://platform.openai.com/account/api-keys)
+  
   ```bash
   export OPENAI_API_KEY=<your-api-key>
   ```
+  
+  Your [Supabase anon key](https://supabase.com/docs/guides/api/api-keys):
+  
+  ```bash
+  export SUPABASE_KEY=<your-api-key>
+  ```
+  
+  Your [GitHub access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) (make sure it has the `codespace`and `repo` scopes):
+  
+  ```bash
+  export GH_ACCESS_TOKEN=<your-api-key>
+  
+  ```
+  
+  Your [Celery Broker URL](https://docs.celeryq.dev/en/stable/getting-started/introduction.html):
+  
+  ```bash
+  export CELERY_BROKER_URL=<your-api-key>
+  ```
+
 
 3. Install the python dependencies.
 
