@@ -212,15 +212,15 @@ We'd like to thank everyone for their contributions to this project and the hack
 
 We would also like to thank the organizers of the [Bio X AI Hackathon](https://hackathon.bio/) for putting on such a great event.
 
-* Chelsea Voss - OpenAI
-* Michael Retchin - Nucleate
-* Tess van Stekelenburg - Lux Capital
-* Niccolo Zanchelli - OpenBioML
-* Katie Link - HuggingFace
-* Alfredo Andere - LatchBio
-* Anton Troynikov - Chroma
-* Lan Jiang - Lux Capital
-* Joshua Meier - AbSci
+* [Chelsea Voss](https://twitter.com/csvoss) - [OpenAI](https://openai.com/)
+* [Michael Retchin](https://twitter.com/MichaelRetchin) - [Nucleate](https://nucleate.xyz/)
+* [Tess van Stekelenburg](https://twitter.com/velvetatom) - [Lux Capital](https://www.luxcapital.com/)
+* [Niccolo Zanchelli](https://twitter.com/nc_znc) - [OpenBioML](https://www.openbioml.org/)
+* [Katie Link](https://twitter.com/katieelink) - [HuggingFace](https://huggingface.co/)
+* [Alfredo Andere](https://twitter.com/AlfredoAndere) - [LatchBio](https://latch.bio/)
+* [Anton Troynikov](https://twitter.com/atroyn) - [Chroma](https://docs.trychroma.com/)
+* [Lan Jiang](https://www.luxcapital.com/people/lan-jiang) - [Lux Capital](https://www.luxcapital.com/)
+* [Joshua Meier](https://twitter.com/joshim5) - [AbSci](https://www.absci.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
