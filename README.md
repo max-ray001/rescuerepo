@@ -92,8 +92,9 @@ The goal is to make it easier to turn any repo, no matter how old, and turn it i
 ### Built With
 
 * [OpenAI](https://pytorch.org/)
-* [Flask](https://flask.palletsprojects.com/en/2.0.x/)
+* [FastAPI](https://fastapi.tiangolo.com/)
 * [React](https://reactjs.org/)
+* [LangChain](https://docs.langchain.com/docs/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -115,26 +116,55 @@ Here is a list of prerequisites you need to install before you can start using t
 
 ### Installation
 
-1. First, install the python dependencies:
+1. First, Fork/Clone the repository.
 
-```bash
-$ pip install -r requirements.txt
-```
+2. Export your OpenAI API key
 
-2. Make sure that you have `npx` installed:
+  ```bash
+  export OPENAI_API_KEY=<your-api-key>
+  ```
+
+3. Install the python dependencies.
+
+  ```bash
+  $ cd backend
+  $ python3.9 -m venv env
+  $ source env/bin/activate
+  (env)$ pip install -r requirements.txt
+  ```
+
+4. Make sure that you have `npx` installed:
     
-```bash
-$ npm install -g npx
-```
+  ```bash
+  $ npm install -g npx
+  ```
 
-3. Enter the `frontend` directory and install the frontend dependencies:
+5. Enter the `frontend` directory and install the frontend dependencies:
 
-```bash
-$ cd frontend
-$ npm i 
-$ npm run build
-```
+  ```bash
+  $ cd frontend
+  $ npm i 
+  $ npm run build
+  ```
 
+6. Run the server-side FastAPI app in one terminal window
+
+  ```bash
+  $ cd backend
+  $ (env)$ python main.py
+  ```
+  Navigate to [http://localhost:8000](http://localhost:8000)
+
+
+7. Run the client-side React app in a different terminal window:
+
+  ```bash
+  $ cd frontend
+  $ npm install
+  $ npm run start
+  ```
+  
+8. _**Navigate to [http://localhost:3000](http://localhost:3000) to see the app running in your browser.**_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -142,21 +172,17 @@ $ npm run build
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-In order to start this project locally, you'll need to start the backend, and the frontend.
+In order to start this project locally, you'll need to start the frontend and then the backend.
 
 <img src="assets/images/initial_page.png" alt="project-page" height="100"  id="project-page-big">
 
-Start the [Flask](https://flask.palletsprojects.com/en/2.3.x/) backend:
+First, follow the [installation](#installation) instructions above.
 
-```bash
-$ python app.py
-```
+Navigate to [http://localhost:3000](http://localhost:3000) to see the app running in your browser.
 
-Finally, start the frontend:
-    
-```bash
-$ cd frontend && npm start
-```
+Sign into GitHub, after which you'll be greeted with the below page.
+
+<img src="assets/images/post_sign_in.png" alt="initial-page" height="100"  id="initial-page-next">
 
 <!-- ROADMAP -->
 ## Roadmap
