@@ -22,7 +22,7 @@ from llms.prompts import (
     get_sample_script_prompt,
 )
 
-app = Celery("tasks", broker=os.getenv("CELERY_BROKER_URL"))
+celery_app = Celery("tasks", broker=os.getenv("CELERY_BROKER_URL"))
 logger = get_task_logger(__name__)
 
 authenticate_openai(os.environ["OPENAI_API_KEY"])
@@ -50,7 +50,7 @@ def send_postmark_email(email: str, github_url: str) -> bool:
         return False
 
 
-@app.task
+@celery_app.task
 def create_development_environment(
     github_repo_url: str,
     github_access_token: str,
@@ -93,7 +93,7 @@ def create_development_environment(
     return "Development environment created"
 
 
-@app.task
+@celery_app.task
 def add(x: Any, y: Any) -> Any:
     logger.info(f"Adding {x} + {y}")
     return x + y

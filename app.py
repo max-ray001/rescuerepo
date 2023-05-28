@@ -1,28 +1,44 @@
 #!/usr/bin/env python
-from requests import Response
+from typing import Dict
 
-from flask import Flask, send_from_directory, request
-from flask_cors import CORS, cross_origin
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from backend.tasks import create_development_environment
 
-app = Flask(__name__, static_url_path="", static_folder="frontend/build")
-CORS(app)
+app = FastAPI()
+
+origins = [
+    "*"  # You can set here your allowed origins, using "*" allows all origins.
+]
+
+# Allow all for now, you can fine-tune this later.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-@app.route("/")
-def index() -> Response:
-    return send_from_directory(app.static_folder, "index.html")
+@app.get("/")
+async def index() -> FileResponse:
+    return FileResponse("frontend/build/index.html")
 
 
-@app.route("/create-dev-environment", methods=["POST"])
-@cross_origin()
-def create_dev_environment() -> dict[str, bool]:
-    email = request.form.get("email")
+@app.post("/create-dev-environment")
+async def create_dev_environment(request: Request) -> Dict[str, bool]:
+    data = await request.json()
+    
+    githubRepoUrl = data.get("githubRepoUrl")
+    email = data.get("email")
+    access_token = data.get("githubAccessToken")
 
-    githubRepoUrl = request.json["githubRepoUrl"]
-    email = request.json["email"]
-    access_token = request.json["githubAccessToken"]
+    if not (githubRepoUrl and email and access_token):
+        raise HTTPException(status_code=400, detail="Missing required fields.")
+
     create_development_environment.delay(githubRepoUrl, email, access_token)
 
     return {"success": True}
