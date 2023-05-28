@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const isDevelopment = false;
 
-var backendUrl = "http://localhost:8000/";
+var backendUrl = "http://localhost:8000";
 
 if (isDevelopment) {
   backendUrl = "http://localhost:8000"
