@@ -207,6 +207,12 @@ Sign into GitHub, after which you'll be greeted with the below page.
 
 <img src="assets/images/post_sign_in.png" alt="initial-page" height="100"  id="initial-page-next">
 
+You can enter in a GitHub repo URL of your choice. At the moment the default is `https://github.com/kkroening/ffmpeg-python`.
+
+Include with this information your GitHub Access token (make sure it has the `repos` and `codespaces` scopes enabled), as well as your email. 
+
+This will trigger the creation of the GitHub codespace.
+
 <!-- ROADMAP -->
 ## Roadmap
 
