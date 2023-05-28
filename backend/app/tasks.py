@@ -59,6 +59,12 @@ def create_development_environment(
 ) -> str:
     logger.info("Creating development environment")
 
+    # Get user
+    if test_mode == False:
+        username = "matthew-mcateer"
+    else:
+        username = "matthew-mcateer"
+
     # Get dockerfile
     if test_mode == False:
         prompt_dockerfile = get_dockerfile_prompt(github_repo_url)
@@ -83,7 +89,7 @@ def create_development_environment(
 
     # Add a function to send an email
     create_codespace_with_files(
-        username="matthew-mcateer",
+        username=username,
         access_token=os.environ["GH_ACCESS_TOKEN"],
         repo_url=github_repo_url,
         docker_file=dockerfile_string,
