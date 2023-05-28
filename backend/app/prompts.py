@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from backend.defaults import DEFAULT_REPO_URL
+from .defaults import DEFAULT_REPO_URL
 
 PROMPT_DEVCONTAINER = f"""
 Based on what you know about dev containers, here are some reference pages

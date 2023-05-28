@@ -5,12 +5,14 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.tasks import create_development_environment
+from .tasks import create_development_environment
 
 app = FastAPI()
 
 origins = [
     "*"  # You can set here your allowed origins, using "*" allows all origins.
+    #"http://localhost:3000",
+    #"localhost:3000"
 ]
 
 # Allow all for now, you can fine-tune this later.
@@ -22,10 +24,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.get("/")
 async def index() -> FileResponse:
-    return FileResponse("frontend/build/index.html")
+    import os
+    # get the current working directory
+    current_working_directory = os.getcwd()
+    # print output to the console
+    print(current_working_directory)
+
+    return FileResponse("../frontend/build/index.html")
 
 
 @app.post("/create-dev-environment")

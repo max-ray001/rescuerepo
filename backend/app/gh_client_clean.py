@@ -8,7 +8,7 @@ from typing import Any, Dict, Optional
 
 from github import Github
 
-from backend.defaults import (
+from .defaults import (
     DEFAULT_ACCESS_TOKEN,
     DEFAULT_DEVCONTAINER_JSON,
     DEFAULT_DOCKERFILE,
@@ -18,7 +18,7 @@ from backend.defaults import (
 )
 
 
-def repo_exists(access_token: str, repo_name: str):
+def repo_exists(access_token: str, repo_name: str) -> bool:
     gh = Github(access_token)
     for repo in gh.get_user().get_repos():
         if repo.name == repo_name:

@@ -7,16 +7,16 @@ import postmark
 from celery import Celery
 from celery.utils.log import get_task_logger
 
-from backend.gh_client_clean import create_codespace_with_files
-from backend.defaults import (
+from .gh_client_clean import create_codespace_with_files
+from .defaults import (
     DEFAULT_DOCKERFILE,
     DEFAULT_DEVCONTAINER_JSON,
     DEFAULT_SAMPLE_SCRIPT,
 )
 
 
-from llms.llm_utils import authenticate_openai, get_code_block_openai
-from llms.prompts import (
+from .llm_utils import authenticate_openai, get_code_block_openai
+from .prompts import (
     PROMPT_DEVCONTAINER,
     get_dockerfile_prompt,
     get_sample_script_prompt,
