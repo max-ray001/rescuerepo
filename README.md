@@ -144,6 +144,8 @@ $ npm run build
 
 In order to start this project locally, you'll need to start the backend, and the frontend.
 
+<img src="assets/images/initial_page.png" alt="project-page" height="100"  id="project-page-big">
+
 Start the [Flask](https://flask.palletsprojects.com/en/2.3.x/) backend:
 
 ```bash
