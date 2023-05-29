@@ -14,5 +14,12 @@ if [ -z "$GH_ACCESS_TOKEN" ]; then
     exit 1
 fi
 
+# Check if the CELERY_BROKER_URL is set
+if [ -z "$CELERY_BROKER_URL" ]; then
+    echo "CELERY_BROKER_URL is not set"
+    echo "Make sure you've set your CELERY_BROKER_URL to a valid RabbitMQ URL or Redis URL"
+    exit 1
+fi
+
 cd backend && pip install -r requirements.txt && cd ..
 cd frontend && npm i && npm run build && cd ..
