@@ -133,6 +133,15 @@ Here is a list of prerequisites you need to install before you can start using t
   export GH_ACCESS_TOKEN=<your-api-key>
   ```
 
+  Your CELERY_BROKER_URL:
+  
+  ```bash
+  export CELERY_BROKER_URL=<your-api-key>
+  ```
+
+  If you're using [RabbitMQ](http://www.rabbitmq.com/download.html), you can use `export CELERY_BROKER_URL=pyamqp://guest@localhost//`.
+  Or if you're using redis, you can use `docker run -d -p 6379:6379 redis && export CELERY_BROKER_URL=redis://localhost:6379/0`.
+
 
 3. Install the python dependencies.
 
