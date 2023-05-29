@@ -22,8 +22,11 @@ if [ -z "$CELERY_BROKER_URL" ]; then
     exit 1
 fi
 
-echo "Installing dependencies for FastAPI server and Celery worker..."
-cd backend && pip install -r requirements.txt && cd ..
-echo "Installing dependencies for React frontend..."
-cd frontend && npm i && npm run build && cd ..
-echo "Done"
+# Open the first terminal window and execute the first command
+gnome-terminal -- bash -c "cd backend && celery --app app.tasks worker --loglevel INFO"
+
+# Open the second terminal window and execute the second command
+gnome-terminal -- bash -c "cd backend && python main.py"
+
+# Open the third terminal window and execute the third command
+gnome-terminal -- bash -c "cd frontend && npm install && npm run start"
