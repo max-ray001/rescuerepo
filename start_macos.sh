@@ -23,10 +23,10 @@ if [ -z "$CELERY_BROKER_URL" ]; then
 fi
 
 # Open the first terminal window and execute the first command for running the celery worker
-osascript -e 'cd backend && celery --app app.tasks worker --loglevel INFO'
+osascript -e 'tell application "Terminal" to do script "cd backend && celery --app app.tasks worker --loglevel INFO"'
 
 # Open the second terminal window and execute the second command for running the FastAPI server
-osascript -e 'cd backend && python main.py'
+osascript -e 'tell application "Terminal" to do script "cd backend && python main.py"'
 
 # Open the third terminal window and execute the third command for running the React frontend
-osascript -e 'cd frontend && npm install && npm run start'
+osascript -e 'tell application "Terminal" to do script "cd frontend && npm install && npm run start"'
