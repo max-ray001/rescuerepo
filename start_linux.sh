@@ -23,10 +23,10 @@ if [ -z "$CELERY_BROKER_URL" ]; then
 fi
 
 # Open the first terminal window and execute the first command
-gnome-terminal -- bash -c "cd backend && celery --app app.tasks worker --loglevel INFO"
+gnome-terminal -- bash -c "cd backend && celery --app app.tasks worker --loglevel INFO; exec bash"
 
 # Open the second terminal window and execute the second command
-gnome-terminal -- bash -c "cd backend && python main.py"
+gnome-terminal -- bash -c "cd backend && python main.py; exec bash"
 
 # Open the third terminal window and execute the third command
-gnome-terminal -- bash -c "cd frontend && npm install && npm run start"
+gnome-terminal -- bash -c "cd frontend && npm install && npm run start; exec bash"
