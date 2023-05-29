@@ -140,6 +140,8 @@ Here is a list of prerequisites you need to install before you can start using t
   ```
 
   If you're using [RabbitMQ](http://www.rabbitmq.com/download.html), you can use `export CELERY_BROKER_URL=pyamqp://guest@localhost//`.
+  The demo version of this project is using a [CloudAMQP](https://www.cloudamqp.com/) instance from Heroku (the free "Little Lemur" tier).
+
   Or if you're using redis, you can use `docker run -d -p 6379:6379 redis && export CELERY_BROKER_URL=redis://localhost:6379/0`.
 
 
@@ -166,7 +168,14 @@ Here is a list of prerequisites you need to install before you can start using t
   $ npm run build
   ```
 
-6. Run the server-side FastAPI app in one terminal window
+6. Start up the Celery worker in one terminal window (your **1st**):
+
+  ```bash
+  $ cd backend
+  $ (env)$ celery --app app.tasks worker --loglevel INFO
+  ```
+
+7. In a **2nd** terminal windown, run the server-side FastAPI app:
 
   ```bash
   $ cd backend
@@ -175,7 +184,7 @@ Here is a list of prerequisites you need to install before you can start using t
   Navigate to [http://localhost:8000](http://localhost:8000)
 
 
-7. Run the client-side React app in a different terminal window:
+8. In a **3rd** terminal window, run the client-side React app:
 
   ```bash
   $ cd frontend
