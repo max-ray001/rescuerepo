@@ -3,7 +3,7 @@ services:
     name: queue
     region: ohio
     env: python
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "pip install -r backend/requirements.txt"
     startCommand: "celery --app tasks worker --loglevel info --concurrency 4"
     autoDeploy: false
     envVars:
@@ -30,7 +30,7 @@ services:
     region: ohio
     plan: free
     env: python
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "pip install -r backend/requirements.txt"
     startCommand: "celery flower --app tasks --loglevel info"
     autoDeploy: false
     envVars:
