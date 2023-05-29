@@ -4,26 +4,26 @@ services:
     region: ohio
     env: python
     buildCommand: "pip install -r backend/requirements.txt"
-    startCommand: "celery --app tasks worker --loglevel info --concurrency 4"
+    startCommand: "celery --app backend.app.tasks worker --loglevel INFO --concurrency 4"
     autoDeploy: false
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
-          name: celery-redis
-          type: redis
+          name: celery-rabbitmq
+          type: rabbitmq
           property: connectionString
   - type: web
     name: app
     region: ohio
     env: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn app:app"
+    startCommand: "cd backend && python main.py"
     autoDeploy: false
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
-          name: celery-redis
-          type: redis
+          name: celery-rabbitmq
+          type: rabbitmq
           property: connectionString
   - type: web
     name: flower
@@ -31,16 +31,16 @@ services:
     plan: free
     env: python
     buildCommand: "pip install -r backend/requirements.txt"
-    startCommand: "celery flower --app tasks --loglevel info"
+    startCommand: "celery flower --app backend.app.tasks --loglevel INFO"
     autoDeploy: false
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
-          type: redis
-          name: celery-redis
+          type: rabbitmq
+          name: celery-rabbitmq
           property: connectionString
-  - type: redis
-    name: celery-redis
+  - type: rabbitmq
+    name: celery-rabbitmq
     region: ohio
     plan: starter # we choose a plan with persistence to ensure tasks are not lost upon restart
     maxmemoryPolicy: noeviction # recommended policy for queues
