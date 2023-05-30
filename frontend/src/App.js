@@ -1,7 +1,7 @@
 import './App.css';
 import { createClient } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import Title from './components/Title';
+import Button from './components/PrimaryButton';
 
 
 
@@ -17,40 +17,7 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 
-
 function App() {
-  return (
-    <div className="App">
-        <h1>
-          Auto Repo Resurrection
-          
-        </h1>
-
-        <p>
-          Just type in a Github URL, and get a working development environment back!
-        </p>
-        <Github />
-    </div>
-  );
-}
-
-
-export function Github() {
-  const [ sessionData, setLoggedIn ] =  useState(null);
-  useEffect(() => {
-     supabase.auth.onAuthStateChange(
-      (event, session) => {
-        // Handle session updates
-        if (event === 'SIGNED_IN') {
-          console.log('signed in')
-        }
-        if (session !== null) {
-          setLoggedIn(session)
-        }
-        console.log(event, session)
-      }
-    )
-  }, [setLoggedIn])
 
   const signInWithGithub = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -67,76 +34,19 @@ export function Github() {
     }
   }
 
-
-  if (sessionData) {
-    return (
-      <div>
-        <SetGithubUrl accessToken={sessionData.access_token} email={sessionData.user.email} />
-        <SignOut />
+  return (
+    <div className="grid grid-cols-2 p-4 h-screen">
+      <div className="flex flex-col justify-center">
+        <Title title="reposurrection." subtitle="breathe a second life into your dead repos." className="px-12" />
       </div>
-    );
-    
+      <div className="flex flex-col h-full w-full justify-center items-center">
 
-  } else {
-    return (
-      <button onClick={signInWithGithub}>
-        Sign in with GitHub
-      </button>
-    )
-  }
-}
-
-function SetGithubUrl(props) {
-  const [ githubRepoUrl, setGithubRepoUrl ] = useState(null);
-  const [ triggeredGithubUrl, setTriggeredGithubUrl ] = useState(null);
-
-  function createDevEnvironment(githubRepoUrl) {
-    axios.post(backendUrl + "/create-dev-environment", {"githubRepoUrl": githubRepoUrl, "githubAccessToken": props.accessToken, "email": props.email }).then((response) => {
-      setTriggeredGithubUrl(githubRepoUrl);
-    })
-  }
-
-  var triggeredGithubUrlText = null;
-
-  if (triggeredGithubUrl) {
-    triggeredGithubUrlText = (
-      <p>
-        Setting up dev environment for {triggeredGithubUrl}! You'll get an email when this completes.
-      </p>
-    )
-  }
-
-
-  return (
-    <div>
-      <input type="text" placeholder='github repo url' value={githubRepoUrl} onChange={e => setGithubRepoUrl(e.target.value)} />
-      <button onClick={() => createDevEnvironment(githubRepoUrl)}>
-        Set Github URL
-      </button>
-      {triggeredGithubUrlText}
+        {/* Note: the onClick functionality is the same as the previous GitHub button. */}
+        <Button text="sign in with GitHub" onClick={signInWithGithub} className="w-1/2 bg-gray-300 hover:bg-blue-700 text-black text-2xl font-medium py-7 px-6 rounded rounded-xl mx-12" />
+      </div>
     </div>
-  )
+  );
 }
 
-
-
-function SignOut() {
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-
-    if (error) {
-      console.log('Error signing out:', error.message)
-    }
-  }
-
-  return (
-    <p>
-      <button onClick={signOut}>
-        Sign out
-      </button>
-    </p>
-
-  )
-} 
 
 export default App;
