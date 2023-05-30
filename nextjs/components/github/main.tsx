@@ -29,7 +29,7 @@ const GithubComponent = () => {
   const supabaseUrl = "https://jkohjbndimwjcyobeuaf.supabase.co";
   const supabase = createClient(
     supabaseUrl,
-    process.env.NEXT_PUBLIC_SUPABASE_KEY
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imprb2hqYm5kaW13amN5b2JldWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODUyNTcxODIsImV4cCI6MjAwMDgzMzE4Mn0.bICKR1hSTyppYMPx8cEgocdY4IaStBlcIJdlQ1Iymg4"
   );
 
   useEffect(() => {

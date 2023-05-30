@@ -127,24 +127,22 @@ Here is a list of prerequisites you need to install before you can start using t
   export OPENAI_API_KEY=<your-api-key>
   ```
   
-  Your [Supabase anon key](https://supabase.com/docs/guides/api/api-keys):
-  
-  ```bash
-  export SUPABASE_KEY=<your-api-key>
-  ```
-  
   Your [GitHub access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) (make sure it has the `codespace`and `repo` scopes):
   
   ```bash
   export GH_ACCESS_TOKEN=<your-api-key>
-  
   ```
-  
-  Your [Celery Broker URL](https://docs.celeryq.dev/en/stable/getting-started/introduction.html):
+
+  Your CELERY_BROKER_URL:
   
   ```bash
   export CELERY_BROKER_URL=<your-api-key>
   ```
+
+  If you're using [RabbitMQ](http://www.rabbitmq.com/download.html), you can use `export CELERY_BROKER_URL=pyamqp://guest@localhost//`.
+  The demo version of this project is using a [CloudAMQP](https://www.cloudamqp.com/) instance from Heroku (the free "Little Lemur" tier).
+
+  Or if you're using redis, you can use `docker run -d -p 6379:6379 redis && export CELERY_BROKER_URL=redis://localhost:6379/0`.
 
 
 3. Install the python dependencies.
@@ -170,7 +168,14 @@ Here is a list of prerequisites you need to install before you can start using t
   $ npm run build
   ```
 
-6. Run the server-side FastAPI app in one terminal window
+6. Start up the Celery worker in one terminal window (your **1st**):
+
+  ```bash
+  $ cd backend
+  $ (env)$ celery --app app.tasks worker --loglevel INFO
+  ```
+
+7. In a **2nd** terminal windown, run the server-side FastAPI app:
 
   ```bash
   $ cd backend
@@ -179,7 +184,7 @@ Here is a list of prerequisites you need to install before you can start using t
   Navigate to [http://localhost:8000](http://localhost:8000)
 
 
-7. Run the client-side React app in a different terminal window:
+8. In a **3rd** terminal window, run the client-side React app:
 
   ```bash
   $ cd frontend
@@ -297,22 +302,25 @@ We would also like to thank the organizers of the [Bio X AI Hackathon](https://h
 [license-url]: https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/matthewmcateer0
-[product-screenshot]: images/book_cover.jpg
-[maintainability-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer/BioMLHackathon_ResurrectionSquad&metric=sqale_rating
-[maintainability-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer/BioMLHackathon_ResurrectionSquad
-[technical-debt-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer/BioMLHackathon_ResurrectionSquad&metric=sqale_index
-[technical-debt-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer/BioMLHackathon_ResurrectionSquad
-[lines-of-code-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer/BioMLHackathon_ResurrectionSquad&metric=ncloc
-[lines-of-code-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer/BioMLHackathon_ResurrectionSquad
-[code-smells-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer/BioMLHackathon_ResurrectionSquad&metric=code_smells
-[code-smells-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer/BioMLHackathon_ResurrectionSquad
-[security-rating-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer/BioMLHackathon_ResurrectionSquad&metric=security_rating
-[security-rating-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer/BioMLHackathon_ResurrectionSquad
-[bugs-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer/BioMLHackathon_ResurrectionSquad&metric=bugs
-[bugs-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer/BioMLHackathon_ResurrectionSquad
-[vulnerabilities-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer/BioMLHackathon_ResurrectionSquad&metric=vulnerabilities
-[vulnerabilities-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer/BioMLHackathon_ResurrectionSquad
-[duplicated-lines-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer/BioMLHackathon_ResurrectionSquad&metric=duplicated_lines_density
-[duplicated-lines-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer/BioMLHackathon_ResurrectionSquad
-[reliability-rating-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer/BioMLHackathon_ResurrectionSquad&metric=reliability_rating
-[reliability-rating-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer/BioMLHackathon_ResurrectionSquad
+[product-screenshot]: assets/images/initial_page.png
+[maintainability-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=sqale_rating
+[maintainability-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
+[technical-debt-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=sqale_index
+[technical-debt-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
+[lines-of-code-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=ncloc
+[lines-of-code-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
+[code-smells-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=code_smells
+[code-smells-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
+[security-rating-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=security_rating
+[security-rating-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
+[bugs-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=bugs
+[bugs-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
+[vulnerabilities-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=vulnerabilities
+[vulnerabilities-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
+[duplicated-lines-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=duplicated_lines_density
+[duplicated-lines-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
+[reliability-rating-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=reliability_rating
+[reliability-rating-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
+
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=alert_status&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0)](https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad)
