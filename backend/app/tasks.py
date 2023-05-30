@@ -35,7 +35,7 @@ except KeyError:
     broker = DEFAULT_RABBITMQ_BROKER
     os.environ.setdefault("CELERY_BROKER_URL", DEFAULT_RABBITMQ_BROKER)
 
-os.environ.setdefault("BROKER_POOL_LIMIT", 1)
+os.environ.setdefault("BROKER_POOL_LIMIT", "1")
 
 celery_app = Celery(
     "tasks", broker=os.environ.get("CELERY_BROKER_URL", DEFAULT_RABBITMQ_BROKER)
