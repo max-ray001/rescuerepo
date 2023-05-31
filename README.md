@@ -132,17 +132,43 @@ Here is a list of prerequisites you need to install before you can start using t
   ```bash
   export GH_ACCESS_TOKEN=<your-api-key>
   ```
+  <details>
+
+  <summary>Getting your properly-scoped GitHub Access token (click to expand)</summary>
+
+  - First, log in to your GitHub account.
+  - Click on your profile photo in the upper right corner of any page.
+  - From the dropdown menu, select "Settings."
+  - On the settings page, find "Developer settings" at the bottom of the left-hand side menu and click it.
+  - Now you should see "Personal access tokens" on the left-hand side menu, click it (click the "classic" tokens).
+  - Click "Generate new token" on the Personal access tokens page.
+  - In the "Note" field, enter a descriptive name for this token that will help you recognize its purpose later (e.g., "Token for forking and Codespaces").
+  - To choose the required permissions, you'll need to select the following scopes:
+    - For forking repositories, you will need the "repo" scope which includes 'public_repo' and others.
+    - To create GitHub Codespaces, you will need the 'codespaces' scope which will allow "full access to managing user codespaces."
+    Therefore, you should select both 'repo' and 'codespaces'.
+
+  - Scroll down and click "Generate token" at the bottom of the page.
+  - After you click the "Generate token" button, GitHub will display your new personal access token. Make sure you copy this token value and store it in a secure location. GitHub will not show the token to you again.
+
+
+  </details>
 
   Your CELERY_BROKER_URL:
   
   ```bash
   export CELERY_BROKER_URL=<your-api-key>
   ```
+  <details>
+  
+  <summary>Getting your CELERY_BROKER_URL (click to expand)</summary>
 
   If you're using [RabbitMQ](http://www.rabbitmq.com/download.html), you can use `export CELERY_BROKER_URL=pyamqp://guest@localhost//`.
   The demo version of this project is using a [CloudAMQP](https://www.cloudamqp.com/) instance from Heroku (the free "Little Lemur" tier).
 
   Or if you're using redis, you can use `docker run -d -p 6379:6379 redis && export CELERY_BROKER_URL=redis://localhost:6379/0`.
+
+  </details>
 
 
 3. Install the python dependencies.
