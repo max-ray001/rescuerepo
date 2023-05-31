@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # Check if the OPENAI_API_KEY is set
 if [ -z "$OPENAI_API_KEY" ]; then

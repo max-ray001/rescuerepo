@@ -293,6 +293,13 @@ def create_codespace_with_files(
     if not repo_exists(access_token, repo_name):
         # Fork the repository
         forked_repo = fork_repository(username, repo_owner, repo_name, headers)
+        print(forked_repo)
+        if forked_repo["message"] == "Resource not accessible by personal access token":
+            print(
+                "You do not have permissions to fork this repository."
+            )
+            print("GitHub returned the following error message: ", forked_repo)
+            exit(1)
         print("Forked!")
 
     # Create a new branch in the forked repository
