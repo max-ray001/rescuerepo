@@ -30,7 +30,7 @@ def list_openai_engines() -> Optional[List[dict]]:
         return None
 
 
-def extract_code_blocks(text: str) -> List[str]:
+def extract_code_blocks_from_chatgpt_output(text: str) -> List[str]:
     code_blocks = re.findall(r"```([\s\S]*?)```", text)
     code_blocks = [code_block.strip() for code_block in code_blocks]
     return code_blocks
@@ -75,7 +75,7 @@ def get_code_block_openai(
         generated_text = response.choices[0].message.content.strip()
         print("Generated text successfully received.")
 
-        code_blocks = extract_code_blocks(generated_text)
+        code_blocks = extract_code_blocks_from_chatgpt_output(generated_text)
         if len(code_blocks) > 0:
             return code_blocks[0]
         else:
