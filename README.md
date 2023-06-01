@@ -244,6 +244,11 @@ Include with this information your GitHub Access token (make sure it has the `re
 
 This will trigger the creation of the GitHub codespace.
 
+If you navigate to the [GitHub Codespaces Dashboard](https://github.com/codespaces), you should see it being created (will resemble the below).
+
+
+<img src="assets/images/codespace_screenshot.png" alt="final-page" height="100"  id="initial-page-final">
+
 <!-- ROADMAP -->
 ## Roadmap
 
