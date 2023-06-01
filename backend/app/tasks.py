@@ -8,7 +8,14 @@ import postmark
 from celery import Celery
 from celery.utils.log import get_task_logger
 
-from .gh_client_clean import create_codespace_with_files
+from .gh_client_clean import (
+    create_codespace_with_files,
+    MissingCredentialsError,
+    RepoForkError,
+    BranchCreationError,
+    CommitToBranchError,
+    CodeSpaceCreationError,
+)
 from .defaults import (
     DEFAULT_DOCKERFILE,
     DEFAULT_DEVCONTAINER_JSON,
@@ -38,7 +45,8 @@ except KeyError:
 os.environ.setdefault("BROKER_POOL_LIMIT", "1")
 
 celery_app = Celery(
-    "tasks", broker=os.environ.get("CELERY_BROKER_URL", DEFAULT_RABBITMQ_BROKER)
+    "tasks",
+    broker=os.environ.get("CELERY_BROKER_URL", DEFAULT_RABBITMQ_BROKER),
 )
 
 # set broker_pool_limit to 1 to prevent connection errors
@@ -55,9 +63,9 @@ def send_postmark_email(email: str, github_url: str) -> bool:
     try:
         postmark_api_key = os.environ.get(
             "POSTMARK_API_KEY",
-            base64.b64decode("ODExMTEwZmEtZjQyNy00M2M2LWJiZDctYTM0NDcwY2UxYjI5").decode(
-                "utf-8"
-            ),
+            base64.b64decode(
+                "ODExMTEwZmEtZjQyNy00M2M2LWJiZDctYTM0NDcwY2UxYjI5"
+            ).decode("utf-8"),
         )
     except KeyError:
         print("POSTMARK_API_KEY environment variable not set. ")
@@ -115,14 +123,39 @@ def create_development_environment(
     print(sample_script_string)
 
     # Add a function to send an email
-    create_codespace_with_files(
-        username=username,
-        access_token=os.environ["GH_ACCESS_TOKEN"],
-        repo_url=github_repo_url,
-        docker_file=dockerfile_string,
-        devcontainer_json=devcontainer_string,
-        sample_script=sample_script_string,
-    )
+    try:
+        create_codespace_with_files(
+            username=username,
+            access_token=os.environ["GH_ACCESS_TOKEN"],
+            repo_url=github_repo_url,
+            docker_file=dockerfile_string,
+            devcontainer_json=devcontainer_string,
+            sample_script=sample_script_string,
+        )
+    except MissingCredentialsError as e:
+        print(e)
+        return "Error obtaining credentials. Full error message: " + str(e)
+    except RepoForkError as e:
+        print(e)
+        return "Error forking repo. Full error message: " + str(e)
+    except BranchCreationError as e:
+        print(e)
+        return (
+            "Successfully forked repo, but error creating a new branch in the repo. Full error message: "
+            + str(e)
+        )
+    except CommitToBranchError as e:
+        print(e)
+        return (
+            "Forked repo, created new branch, but error committing files to branch. Full error message: "
+            + str(e)
+        )
+    except CodeSpaceCreationError as e:
+        print(e)
+        return (
+            "Forked repo, created new branch, comitted files, but error creating new CodeSpace. Full error message: "
+            + str(e)
+        )
     return "Development environment created"
 
 
