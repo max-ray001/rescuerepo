@@ -75,7 +75,7 @@ def send_postmark_email(email: str, github_url: str) -> bool:
         sender="sender@example.com",
         to=email,
         subject="Your development environment is ready!",
-        text_body=f"Your codespace is ready! You can access it here: {github_url}",
+        text_body=f"Your codespace of your fork of {github_url} is ready!\n\nYou can access it here https://github.com/codespaces",
     )
     try:
         client.send(message)
@@ -88,15 +88,17 @@ def send_postmark_email(email: str, github_url: str) -> bool:
 @celery_app.task
 def create_development_environment(
     github_repo_url: str,
-    github_access_token: str,
     user_email: str,
+    github_access_token: str,
+    username: str = "matthew-mcateer",
     test_mode: bool = True,
+    send_email: bool = False,
 ) -> str:
     celery_logger.info("Creating development environment")
 
     # Get user
     if test_mode == False:
-        username = "matthew-mcateer"
+        username = username
     else:
         username = "matthew-mcateer"
 
@@ -124,9 +126,11 @@ def create_development_environment(
 
     # Add a function to send an email
     try:
+        #TODO: Delete this line to enable getting the token directly from the user
+        github_access_token = os.environ["GH_ACCESS_TOKEN"]
         create_codespace_with_files(
             username=username,
-            access_token=os.environ["GH_ACCESS_TOKEN"],
+            access_token=github_access_token,
             repo_url=github_repo_url,
             docker_file=dockerfile_string,
             devcontainer_json=devcontainer_string,
@@ -156,6 +160,8 @@ def create_development_environment(
             "Forked repo, created new branch, comitted files, but error creating new CodeSpace. Full error message: "
             + str(e)
         )
+    if send_email==True:
+        send_postmark_email(email=user_email, github_url=github_repo_url)
     return "Development environment created"
 
 
