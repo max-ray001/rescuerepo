@@ -26,8 +26,12 @@ fi
 # Open the first terminal window and execute the first command
 gnome-terminal -- bash -c "cd backend && celery --app app.tasks worker --loglevel INFO; exec bash"
 
+sleep 5
+
 # Open the second terminal window and execute the second command
 gnome-terminal -- bash -c "cd backend && python main.py; exec bash"
+
+sleep 5
 
 # Open the third terminal window and execute the third command
 gnome-terminal -- bash -c "cd frontend && npm install && npm run start; exec bash"
