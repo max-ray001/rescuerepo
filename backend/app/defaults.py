@@ -3,6 +3,9 @@ import os
 
 DEFAULT_ACCESS_TOKEN = os.environ.get("GH_ACCESS_KEY")
 DEFAULT_USERNAME = "matthew-mcateer"
+
+# Default examples
+
 DEFAULT_REPO_URL = "https://github.com/kkroening/ffmpeg-python"
 DEFAULT_DOCKERFILE = """# Use the official Python base image
 FROM python:3.9-slim
@@ -65,4 +68,71 @@ with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_video_file
 
 print("Video processing completed. The output video is saved as output_video.mp4.")
 """
+
+# Nextflow-Flyte Conversion examples
+
+NF_TO_FLYTE_REPO_URL = "https://github.com/AstroGlia-io/sequence_records"
+NF_TO_FLYTE_DOCKERFILE = """# Use nextflow/nextflow:22.10.8 as a base image
+FROM nextflow/nextflow:22.10.8
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    sudo \
+    python3.9 \
+    python3-pip
+
+# Install flytekit and scikit-learn
+RUN pip3 install flytekit scikit-learn
+
+# Install Flyte
+RUN curl -sL https://ctl.flyte.org/install | sudo bash -s -- -b /usr/local/bin
+
+"""
+NF_TO_FLYTE_DEVCONTAINER_JSON = """{
+    "name": "nf-to-flyte-dev-container",
+    "dockerFile": "Dockerfile",
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+        "ms-python.python"
+    ],
+    "forwardPorts": [],
+    "postCreateCommand": "echo 'Welcome to your nextflow-to-flyte dev container!'"
+}
+"""
+
+NF_TO_FLYTE_SAMPLE_SCRIPT = """import subprocess
+from flytekit import task, workflow
+
+@task
+def split_sequences(file_path: str) -> str:
+    SPLIT = 'gcsplit' if System.properties['os.name'] == 'Mac OS X' else 'csplit'
+    # file_path = "~/sample.fa" would normally be an input argument
+    output_prefix = 'seq_'
+    # run the csplit command, storing the outputs in files with names prefixed by 'seq_'
+    subprocess.check_output(f"{SPLIT} {file_path} '%^>%' '/^>/' '{{*}}' -f {output_prefix}", shell=True)
+    return output_prefix
+
+@task
+def reverse(input_prefix: str) -> str:
+    # use a shell command to get a list of all files that match the prefix
+    files = subprocess.check_output(f"ls {input_prefix}*", shell=True).decode().split('\n')
+    reversed_sequences = []
+    # iterate through each file
+    for f in files:
+        if f:  # skip empty names
+            # reverse the content of each file and store the result
+            reversed_sequences.append(subprocess.check_output(f"cat {f} | rev", shell=True).decode())
+    return "\n".join(reversed_sequences)
+
+@workflow
+def reverse_workflow(file_path: str) -> str:
+    prefix = split_sequences(file_path=file_path)
+    return reverse(input_prefix=prefix)
+
+"""
+
+
 
