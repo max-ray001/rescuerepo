@@ -72,7 +72,7 @@ def send_postmark_email(email: str, github_url: str) -> bool:
         return False
     client = postmark.Client(api_token=postmark_api_key)
     message = postmark.Message(
-        sender="sender@example.com",
+        sender="matthew@astroglia.io",
         to=email,
         subject="Your development environment is ready!",
         text_body=f"Your codespace of your fork of {github_url} is ready!\n\nYou can access it here https://github.com/codespaces",
