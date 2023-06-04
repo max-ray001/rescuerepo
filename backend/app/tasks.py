@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 import base64
 import os
-from typing import Any
+#from typing import Any
 
 import postmark
 
-from celery import Celery
-from celery.utils.log import get_task_logger
+#from celery import Celery
+#from celery.utils.log import get_task_logger
 from loguru import logger
 
 from .gh_client_clean import (
@@ -18,9 +18,14 @@ from .gh_client_clean import (
     CodeSpaceCreationError,
 )
 from .few_shot_examples import (
-    DEFAULT_DOCKERFILE,
-    DEFAULT_DEVCONTAINER_JSON,
-    DEFAULT_SAMPLE_SCRIPT,
+    DEFAULT_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+    DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE,
+    DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
+    DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
+    NF_TO_FLYTE_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+    NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE,
+    NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE,
+    NF_TO_FLYTE_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
 )
 
 
@@ -92,51 +97,55 @@ def create_development_environment(
     user_email: str,
     github_access_token: str,
     username: str = "matthew-mcateer",
-    test_mode: bool = True,
     send_email: bool = False,
 ) -> str:
     logger.info("Creating development environment")
-
-    # Get user
-    if test_mode == False:
-        username = username
-    else:
-        username = "matthew-mcateer"
-
-    # Get dockerfile
-    if test_mode == False:
-        prompt_dockerfile = get_dockerfile_prompt(github_repo_url)
-        dockerfile_string = get_code_block_openai(prompt_dockerfile)
-    else:
-        dockerfile_string = DEFAULT_DOCKERFILE
-    # Get devcontainer.json
-    if test_mode == False:
-        devcontainer_string = get_code_block_openai(PROMPT_DEVCONTAINER)
-    else:
-        devcontainer_string = DEFAULT_DEVCONTAINER_JSON
-
-    # Get sample script
-    if test_mode == False:
-        prompt_sample_script = get_sample_script_prompt(PROMPT_DEVCONTAINER)
-        sample_script_string = get_code_block_openai(prompt_sample_script)
-    else:
-        sample_script_string = DEFAULT_SAMPLE_SCRIPT
-
-    # Fork a repo and create codespace on top of that
-    print(sample_script_string)
-
-    # Add a function to send an email
     try:
         #TODO: Delete this line to enable getting the token directly from the user
         github_access_token = os.environ["GH_ACCESS_TOKEN"]
-        create_codespace_with_files(
-            username=username,
-            access_token=github_access_token,
-            repo_url=github_repo_url,
-            docker_file=dockerfile_string,
-            devcontainer_json=devcontainer_string,
-            sample_script=sample_script_string,
-        )
+        #github_access_token = os.environ.get("GH_ACCESS_TOKEN",github_access_token)
+        if github_repo_url == "":
+            return "Error: No repo url provided"
+        elif github_repo_url == DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE:
+            create_codespace_with_files(
+                username=username,
+                access_token=github_access_token,
+                repo_url=DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
+                docker_file=DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE,
+                devcontainer_json=DEFAULT_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+                sample_script=DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
+            )
+        elif github_repo_url == NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE:
+            create_codespace_with_files(
+                username=username,
+                access_token=github_access_token,
+                repo_url=NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE,
+                docker_file=NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE,
+                devcontainer_json=NF_TO_FLYTE_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+                sample_script=NF_TO_FLYTE_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
+            )
+        else:
+            # Get dockerfile
+            prompt_dockerfile = get_dockerfile_prompt(github_repo_url)
+            dockerfile_string = get_code_block_openai(prompt_dockerfile)
+
+            # Get devcontainer.json
+            devcontainer_string = get_code_block_openai(PROMPT_DEVCONTAINER)
+
+            # Get sample script
+            prompt_sample_script = get_sample_script_prompt(PROMPT_DEVCONTAINER)
+            sample_script_string = get_code_block_openai(prompt_sample_script)
+
+            # Fork a repo and create codespace on top of that
+            print(sample_script_string)
+            create_codespace_with_files(
+                username=username,
+                access_token=github_access_token,
+                repo_url=github_repo_url,
+                docker_file=dockerfile_string,
+                devcontainer_json=devcontainer_string,
+                sample_script=sample_script_string,
+            )
     except MissingCredentialsError as e:
         print(e)
         return "Error obtaining credentials. Full error message: " + str(e)
