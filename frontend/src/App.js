@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const isDevelopment = false;
 
-var backendUrl = "http://localhost:8000";
+var backendUrl = "https://resurrection-squad-demo.herokuapp.com";
 
 if (isDevelopment) {
   backendUrl = "http://localhost:8000"

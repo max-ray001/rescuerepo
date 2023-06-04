@@ -10,7 +10,17 @@ from .tasks import create_development_environment, create_dev_environment_task
 
 USE_TASK_QUEUE = False
 
-app = FastAPI()
+app = FastAPI(
+    title="backend",
+    description="Backend API for the Dev Environments project.",
+    version="0.0.1",
+    docs_url="/documentation",
+    redoc_url="/redocumentation",
+    license_info={
+        "name": "Apache 2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+    },
+)
 
 origins = [
     "*"  # You can set here your allowed origins, using "*" allows all origins.
