@@ -10,10 +10,10 @@ from github import Github
 
 from .few_shot_examples import (
     DEFAULT_ACCESS_TOKEN,
-    DEFAULT_DEVCONTAINER_JSON,
-    DEFAULT_DOCKERFILE,
-    DEFAULT_REPO_URL,
-    DEFAULT_SAMPLE_SCRIPT,
+    DEFAULT_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+    DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE,
+    DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
+    DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
     DEFAULT_USERNAME,
 )
 
@@ -264,9 +264,9 @@ if __name__ == "__main__":
     create_codespace_with_files(
         username=DEFAULT_USERNAME,
         access_token=DEFAULT_ACCESS_TOKEN,
-        repo_url=DEFAULT_REPO_URL,
-        docker_file=DEFAULT_DOCKERFILE,
-        devcontainer_json=DEFAULT_DEVCONTAINER_JSON,
-        sample_script=DEFAULT_SAMPLE_SCRIPT,
+        repo_url=DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
+        docker_file=DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE,
+        devcontainer_json=DEFAULT_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+        sample_script=DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
     )
 

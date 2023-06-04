@@ -106,6 +106,10 @@ def create_development_environment(
         #github_access_token = os.environ.get("GH_ACCESS_TOKEN",github_access_token)
         if github_repo_url == "":
             return "Error: No repo url provided"
+        if github_access_token == "":
+            return "Error: No access token provided"
+        if user_email == "":
+            return "Error: No email provided"
         elif github_repo_url == DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE:
             create_codespace_with_files(
                 username=username,

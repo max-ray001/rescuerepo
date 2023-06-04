@@ -9,15 +9,22 @@ from requests import Response
 from typing import Any, Dict, Optional, Tuple
 
 from github import Github
+from backend.app.few_shot_examples import (
+    NF_TO_FLYTE_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+    NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE,
+    NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE,
+    NF_TO_FLYTE_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
+)
 
 from few_shot_examples import (
     DEFAULT_ACCESS_TOKEN,
-    DEFAULT_DEVCONTAINER_JSON,
-    DEFAULT_DOCKERFILE,
-    DEFAULT_REPO_URL,
-    DEFAULT_SAMPLE_SCRIPT,
+    DEFAULT_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+    DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE,
+    DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
+    DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
     DEFAULT_USERNAME,
 )
+
 
 
 class MissingCredentialsError(Exception):
@@ -499,15 +506,26 @@ def create_codespace_with_files(
 
 
 if __name__ == "__main__":
+    test_with_defaults = False
     try:
-        create_codespace_with_files(
-            username=DEFAULT_USERNAME,
-            access_token=DEFAULT_ACCESS_TOKEN,
-            repo_url=DEFAULT_REPO_URL,
-            docker_file=DEFAULT_DOCKERFILE,
-            devcontainer_json=DEFAULT_DEVCONTAINER_JSON,
-            sample_script=DEFAULT_SAMPLE_SCRIPT,
-        )
+        if test_with_defaults==True:
+            create_codespace_with_files(
+                username=DEFAULT_USERNAME,
+                access_token=DEFAULT_ACCESS_TOKEN,
+                repo_url=NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE,
+                docker_file=NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE,
+                devcontainer_json=NF_TO_FLYTE_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+                sample_script=NF_TO_FLYTE_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
+            )
+        else:
+            create_codespace_with_files(
+                username=DEFAULT_USERNAME,
+                access_token=DEFAULT_ACCESS_TOKEN,
+                repo_url=DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
+                docker_file=DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE,
+                devcontainer_json=DEFAULT_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+                sample_script=DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
+            )
     except MissingCredentialsError as e:
         print(e)
         exit(1)

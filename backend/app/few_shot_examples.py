@@ -4,7 +4,7 @@ import os
 DEFAULT_ACCESS_TOKEN = os.environ.get("GH_ACCESS_KEY")
 DEFAULT_USERNAME = "matthew-mcateer"
 
-# Default examples
+# Default few-shot examples
 
 DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE = "https://github.com/kkroening/ffmpeg-python"
 DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE = """# Use the official Python base image
@@ -69,7 +69,7 @@ with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_video_file
 print("Video processing completed. The output video is saved as output_video.mp4.")
 """
 
-# Nextflow-Flyte Conversion examples
+# Nextflow-Flyte Conversion few-shot examples
 
 NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE = "https://github.com/AstroGlia-io/sequence_records"
 NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE = """# Use nextflow/nextflow:22.10.8 as a base image
