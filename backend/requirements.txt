@@ -1,4 +1,5 @@
 amqp==5.1.0
+anthropic
 async-timeout==4.0.2
 billiard==3.6.4.0
 cached-property==1.5.2
@@ -18,6 +19,7 @@ importlib-metadata==4.11.3
 itsdangerous==2.1.2
 Jinja2==3.1.1
 kombu==5.2.4
+langchain
 MarkupSafe==2.1.1
 openai==0.27.2
 packaging==21.3

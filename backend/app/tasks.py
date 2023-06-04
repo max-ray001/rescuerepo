@@ -27,6 +27,10 @@ from .few_shot_examples import (
     NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE,
     NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE,
     NF_TO_FLYTE_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
+    LUCIDRAINS_PROGEN_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+    LUCIDRAINS_PROGEN_DOCKERFILE_FEW_SHOT_EXAMPLE,
+    LUCIDRAINS_PROGEN_REPO_URL_FEW_SHOT_EXAMPLE,
+    LUCIDRAINS_PROGEN_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
 )
 
 
@@ -135,6 +139,15 @@ def create_development_environment(
                 docker_file=NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE,
                 devcontainer_json=NF_TO_FLYTE_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
                 sample_script=NF_TO_FLYTE_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
+            )
+        elif github_repo_url == LUCIDRAINS_PROGEN_REPO_URL_FEW_SHOT_EXAMPLE:
+            create_codespace_with_files(
+                username=username,
+                access_token=github_access_token,
+                repo_url=LUCIDRAINS_PROGEN_REPO_URL_FEW_SHOT_EXAMPLE,
+                docker_file=LUCIDRAINS_PROGEN_DOCKERFILE_FEW_SHOT_EXAMPLE,
+                devcontainer_json=LUCIDRAINS_PROGEN_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+                sample_script=LUCIDRAINS_PROGEN_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
             )
         else:
             # Get dockerfile
