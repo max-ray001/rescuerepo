@@ -1,5 +1,4 @@
 amqp==5.1.0
-anthropic
 async-timeout==4.0.2
 billiard==3.6.4.0
 cached-property==1.5.2
