@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const isDevelopment = true;
 
-var backendUrl = "https://biomlspace-1-i6786382.deta.app";
+var backendUrl = "http://localhost:8000";
 
 if (isDevelopment) {
   backendUrl = "http://localhost:8000"
