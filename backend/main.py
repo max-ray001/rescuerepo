@@ -11,7 +11,7 @@ for filepath in filepaths:
     if os.path.exists(filepath):
         load_dotenv(filepath)
         found_path = True
-        print(f"Loaded dotenv file: {filepath}")
+        logger.info(f"Loaded dotenv file: {filepath}")
         break
 
 if not found_path:

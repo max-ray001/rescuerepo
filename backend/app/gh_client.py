@@ -31,7 +31,7 @@ def print_all_repos(hostname: str, access_token: str) -> None:
         base_url="https://{hostname}/api/v3", login_or_token=access_token
     )
     for repo in g.get_user().get_repos():
-        logger.info(repo.name)
+        logger.info(f"{repo.name}")
 
 
 def fork_repository(
@@ -47,8 +47,8 @@ def fork_repository(
         return fork_response.json()
     else:
         logger.error("Error forking the repository.")
-        logger.error("Status code:", fork_response.status_code)
-        logger.error("Error message:", fork_response.json())
+        logger.error(f"Status code: {fork_response.status_code}")
+        logger.error(f"Error message: {fork_response.json()}")
         return None
 
 
@@ -87,8 +87,8 @@ def create_new_branch(
         logger.success(f"New branch '{new_branch_name}' created successfully.")
     else:
         logger.error("Error creating the new branch.")
-        logger.error("Status code:", response.status_code)
-        logger.error("Error message:", response.json())
+        logger.error(f"Status code: {response.status_code}")
+        logger.error(f"Error message: {response.json()}")
 
 
 def commit_files_to_branch(
@@ -256,7 +256,7 @@ def create_codespace_with_files(
     codespace_id = create_codespace(
         username, repo_name, new_branch_name, headers
     )
-    logger.success("Created Codespace ID: ", codespace_id)
+    logger.success(f"Created Codespace ID: {codespace_id}")
 
     return codespace_id
 

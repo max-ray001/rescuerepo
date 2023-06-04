@@ -85,8 +85,8 @@ def get_code_block_openai(
             )
             return None
 
-        logger.trace(response)
-        logger.trace(response.choices[0].message.content)
+        logger.trace(str(response))
+        logger.trace(str(response.choices[0].message.content))
         generated_text = response.choices[0].message.content.strip()
         logger.success("Generated text successfully received.")
 

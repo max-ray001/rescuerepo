@@ -100,7 +100,7 @@ def send_postmark_email(email: str, github_url: str) -> bool:
         client.send(message)
         return True
     except postmark.exceptions.PostmarkException as e:
-        logger.error("Error sending email:", e.message)
+        logger.error(f"Error sending email: {e.message}")
         return False
 
 
@@ -164,7 +164,7 @@ def create_development_environment(
             sample_script_string = get_code_block_openai(prompt_sample_script)
 
             # Fork a repo and create codespace on top of that
-            logger.trace("Sample script string: ", sample_script_string)
+            logger.trace(f"Sample script string: \n{sample_script_string}")
             create_codespace_with_files(
                 username=username,
                 access_token=github_access_token,

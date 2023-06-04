@@ -41,13 +41,16 @@ async def index() -> FileResponse:
 @app.post("/create-dev-environment")
 async def create_dev_environment(request: Request) -> Dict[str, bool]:
     data = await request.json()
+
+    logger.trace(f"Data: {data}")
     
     githubRepoUrl = data.get("githubRepoUrl")
     email = data.get("email")
     access_token = data.get("githubAccessToken")
 
-    logger.trace("GitHub Repo URL: ", githubRepoUrl)
-    logger.trace("email: ", email)
+    logger.debug(f"GitHub Repo URL: {githubRepoUrl}", )
+    logger.debug(f"email: {email}")
+    logger.debug(f"access_token: {access_token}")
 
     if not (githubRepoUrl and email and access_token):
         raise HTTPException(status_code=400, detail="Missing required fields.")
