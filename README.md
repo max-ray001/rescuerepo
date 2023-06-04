@@ -91,11 +91,21 @@ The goal is to make it easier to turn any repo, no matter how old, and turn it i
 
 ### Built With
 
+* [Python](https://www.python.org/)
+* [NextJS](https://nextjs.org/)
 * [OpenAI](https://pytorch.org/)
 * [FastAPI](https://fastapi.tiangolo.com/)
 * [React](https://reactjs.org/)
 * [LangChain](https://docs.langchain.com/docs/)
 * [Supabase](https://supabase.com/)
+* [Docker](https://www.docker.com/)
+* [GitHub Codespaces](https://github.com/codespaces)
+* [Postmark](https://postmarkapp.com/)
+* [Celery](https://docs.celeryq.dev/en/stable/getting-started/first-steps-with-celery.html#first-steps)
+* [RabbitMQ](https://www.rabbitmq.com/)
+* [Heroku](https://www.heroku.com/)
+
+<img src="assets/images/BioML_Hackathon_Blueprint.png" alt="architecture-image" height="350"  id="architecture-image">
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -254,11 +264,19 @@ If you navigate to the [GitHub Codespaces Dashboard](https://github.com/codespac
 
 The scope of this project is admittedly quite large, so we've broken it down into a few phases:
 
-- [*] Setting up a workflow for generating dev environments from an arbitrary repo
-    - [*] Creating a fork with a `dockerfile`, `devcontainer.json`, and anything else needed for a GitHub Codespace
-- [ ] Automatically Generated Dev Environments using GPT-4 (or Claude 100k)
-- [ ] Automatically Refactoring Code using GPT-4 (or Claude 100k)
-- [ ] Improving the UI/UX of the above.
+- ✅ Embedding Map of Bioinformatics tools ( [view here](https://fancy-baklava-ee6d10.netlify.app/3d_embedding_exploration_tool) )
+- ✅ Setting up a workflow for generating dev environments from an arbitrary repo
+    - ✅ Creating a fork with a `dockerfile`, `devcontainer.json`, and anything else needed for a GitHub Codespace
+  - ✅ Automatically Generated Dev Environments using GPT-4 (or Claude 100k)
+  - 🚧 Get running environments built without error >50% of the time
+- ✅ Automatically Refactoring Code using GPT-4 (or Claude 100k)
+- 🚧 Translating languages using GPT-4 (or Claude 100k)
+  - ✅ Nextflow-to-Flyte Translaton
+  - 🚧 Nextflow-to-Snakemake Translaton
+  - 🚧 Nextflow-to-Redun Translaton
+  - 🚧 Nextflow-to-CWL Translaton
+  - 🚧 MATLAB-to-Python Translaton
+- 🚧 Improving the UI/UX of the above.
 
 See the [open issues](https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad/issues) for a full list of proposed features (and known issues).
 
