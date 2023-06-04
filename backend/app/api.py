@@ -33,7 +33,7 @@ async def index() -> FileResponse:
     # get the current working directory
     current_working_directory = os.getcwd()
     # print output to the console
-    logger.trace("Current working directory: ", current_working_directory)
+    logger.trace(f"Current working directory: {current_working_directory}")
 
     return FileResponse("../frontend/build/index.html")
 

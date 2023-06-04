@@ -87,20 +87,15 @@ def check_if_repo_exists(
     else:
         if repo_response.status_code == 301:
             logger.info(
-                f"Error 301: Repository {repo_owner}/{repo_name} moved permenantly\n",
-                repo_response.json(),
+                f"Error 301: Repository {repo_owner}/{repo_name} moved permenantly\n{repo_response.json()}",
             )
         elif repo_response.status_code == 401:
             raise RepoForkError(
-                "Error 401: Bad Credentials\n"
-                + str(repo_response.json())
-                + "\n"
-                + str(headers)
+                f"Error 401: Bad Credentials\n{str(repo_response.json())}\n{str(headers)}"
             )
         elif repo_response.status_code == 403:
             logger.info(
-                f"Error 403: Repository {repo_owner}/{repo_name} not found. Forbidden\n",
-                repo_response.json(),
+                f"Error 403: Repository {repo_owner}/{repo_name} not found. Forbidden\n {repo_response.json()}",
             )
         elif repo_response.status_code == 404:
             logger.info(
@@ -108,8 +103,7 @@ def check_if_repo_exists(
             )
         else:
             logger.error(
-                f"Unknown error checking repository {repo_owner}/{repo_name}\n"
-                + str(repo_response.json())
+                f"Unknown error checking repository {repo_owner}/{repo_name}\n {str(repo_response.json())}"
             )
     return False
 
@@ -142,8 +136,8 @@ def fork_repository(
         else:
             logger.warning("Error forking the repository.")
 
-        logger.error("Status code:", fork_response.status_code)
-        logger.error("Error message:", fork_response.json())
+        logger.error(f"Status code: {fork_response.status_code}", )
+        logger.error(f"Error message: {fork_response.json()}")
     return int(fork_response.status_code), fork_response.json()
 
 
@@ -163,7 +157,7 @@ def create_new_branch(
 
     main_branch_sha = None
     for branch in branches:
-        logger.trace(branch)
+        logger.trace(f"{branch}")
         if branch["ref"] == "refs/heads/main":
             main_branch_sha = branch["object"]["sha"]
             break
@@ -185,8 +179,8 @@ def create_new_branch(
         logger.success(f"New branch '{new_branch_name}' created successfully.")
     else:
         logger.error("Error creating the new branch.")
-        logger.error("Status code:", new_branch_response.status_code)
-        logger.error("Error message:", new_branch_response.json())
+        logger.error(f"Status code: {new_branch_response.status_code}")
+        logger.error(f"Error message: {new_branch_response.json()}")
 
 
 def commit_files_to_branch(
@@ -204,7 +198,7 @@ def commit_files_to_branch(
 
     # Get default branch and its commit SHA
     repo_info = requests.get(api_base_url, headers=headers).json()
-    logger.trace(repo_info)
+    logger.trace(f"{repo_info}")
     default_branch = repo_info["default_branch"]
     default_branch_sha = requests.get(
         f"{api_base_url}/git/ref/heads/master", headers=headers
@@ -245,7 +239,7 @@ def commit_files_to_branch(
     latest_commit_tree_sha = requests.get(
         f"{api_base_url}/git/commits/{default_branch_sha}", headers=headers
     ).json()["tree"]["sha"]
-    logger.info("Latest commit tree SHA:", latest_commit_tree_sha)
+    logger.info(f"Latest commit tree SHA: {latest_commit_tree_sha}")
 
     # Create a new tree with the new blobs
     new_tree_response = requests.post(
@@ -279,11 +273,12 @@ def commit_files_to_branch(
     if new_tree_response.status_code == 201:
         new_tree = new_tree_response.json()
         logger.success("New tree created successfully.")
-        logger.success("New tree SHA:", new_tree["sha"])
+        new_tree_sha = new_tree["sha"]
+        logger.info(f"New tree SHA: {new_tree_sha}")
     else:
         logger.error("Error creating the new tree.")
-        logger.error("Status code:", new_tree_response.status_code)
-        logger.error("Error message:", new_tree_response.json())
+        logger.error(f"Status code: {new_tree_response.status_code}")
+        logger.error(f"Error message: {new_tree_response.json()}")
         exit(1)
 
     # Create a new commit with the new tree
@@ -300,11 +295,12 @@ def commit_files_to_branch(
     if new_commit_response.status_code == 201:
         new_commit = new_commit_response.json()
         logger.success("New commit created successfully.")
-        logger.success("New commit SHA:", new_commit["sha"])
+        new_commit_sha = new_commit["sha"]
+        logger.info(f"New commit SHA: {new_commit_sha}")
     else:
         logger.error("Error creating the new commit.")
-        logger.error("Status code:", new_commit_response.status_code)
-        logger.error("Error message:", new_commit_response.json())
+        logger.error(f"Status code: {new_commit_response.status_code}")
+        logger.error(f"Error message: {new_commit_response.json()}")
         exit(1)
 
     # Create new branch on the forked repository with the new commit SHA
@@ -321,8 +317,8 @@ def commit_files_to_branch(
         )
     else:
         logger.error("Error creating the new branch on the forked repository.")
-        logger.error("Status code:", create_branch_response.status_code)
-        logger.error("Error message:", create_branch_response.json())
+        logger.error(f"Status code: {create_branch_response.status_code}")
+        logger.error(f"Error message: {create_branch_response.json()}")
         exit(1)
 
 
@@ -349,12 +345,11 @@ def create_new_github_codespace(
 
         # Poll the Codespace's status until it becomes 'available'
         codespace_id = codespace["id"]
-        logger.trace("GitHub Codespace ID: ", codespace_id)
-        logger.trace("GitHub Codespace info:\n")
-        logger.trace(json.dumps(codespace, indent=4))
+        logger.trace(f"GitHub Codespace ID: {codespace_id}")
+        logger.trace(f"GitHub Codespace info:\n {json.dumps(codespace, indent=4)}")
 
         codespace_status = codespace["state"]
-        logger.info("Codespace Status: ", codespace_status)
+        logger.info(f"Codespace Status: {codespace_status}")
         return codespace_id
         # while codespace_status != 'Available':
         #    time.sleep(10)
@@ -369,8 +364,8 @@ def create_new_github_codespace(
 
     else:
         logger.error("Error creating the Codespace.")
-        logger.error("Status code:", create_codespace_response.status_code)
-        logger.error("Error message:", create_codespace_response.json())
+        logger.error(f"Status code: {create_codespace_response.status_code}")
+        logger.error(f"Error message: {create_codespace_response.json()}")
 
 
 def create_codespace_with_files(
@@ -383,11 +378,11 @@ def create_codespace_with_files(
 ) -> str:
     # Extract repository owner and name from the repo URL
     repo_parts = repo_url.split("/")
-    logger.trace("repo_parts", repo_parts)
+    logger.trace(f"repo_parts {repo_parts}")
     repo_owner = repo_parts[-2]
-    logger.trace("repo_owner", repo_owner)
+    logger.trace(f"repo_owner {repo_owner}")
     repo_name = repo_parts[-1].replace(".git", "")
-    logger.trace("repo_name", repo_name)
+    logger.trace(f"repo_name: {repo_name}")
 
     # check that access token has been set
     if not access_token:
@@ -415,7 +410,7 @@ def create_codespace_with_files(
             repo_owner=username, repo_name=repo_name, headers=headers
         )
     except RepoForkError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         raise e
 
     if (not new_repo_exists) and origin_repo_exists:
@@ -426,9 +421,10 @@ def create_codespace_with_files(
             repo_name=repo_name,
             headers=headers,
         )
-        logger.trace(forked_repo)
+        logger.trace(f"{forked_repo}")
         if response_code == 202:
-            logger.success("Forked! Fork now available at ", forked_repo["html_url"])
+            forked_repo_url = forked_repo["html_url"]
+            logger.success(f"Forked! Fork now available at {forked_repo_url}")
         else:
             if (
                 forked_repo["message"]
@@ -463,7 +459,7 @@ def create_codespace_with_files(
             headers=headers,
         )
     except BranchCreationError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         raise BranchCreationError(
             f"Error creating the new branch {new_branch_name} in the repository {repo_name}."
         )
@@ -480,7 +476,7 @@ def create_codespace_with_files(
             headers=headers,
         )
     except CommitToBranchError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         raise CommitToBranchError(
             f"Error committing files to the branch {new_branch_name} in the repository {repo_name}."
         )
@@ -495,7 +491,7 @@ def create_codespace_with_files(
             headers=headers,
         )
     except CodeSpaceCreationError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         raise CodeSpaceCreationError(
             f"Error creating the Codespace for the branch {new_branch_name} in the repository {repo_name}."
         )
@@ -525,17 +521,17 @@ if __name__ == "__main__":
                 sample_script=DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
             )
     except MissingCredentialsError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         exit(1)
     except RepoForkError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         exit(1)
     except BranchCreationError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         exit(1)
     except CommitToBranchError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         exit(1)
     except CodeSpaceCreationError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         exit(1)

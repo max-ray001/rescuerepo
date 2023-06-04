@@ -174,25 +174,25 @@ def create_development_environment(
                 sample_script=sample_script_string,
             )
     except MissingCredentialsError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         return "Error obtaining credentials. Full error message: " + str(e)
     except RepoForkError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         return "Error forking repo. Full error message: " + str(e)
     except BranchCreationError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         return (
             "Successfully forked repo, but error creating a new branch in the repo. Full error message: "
             + str(e)
         )
     except CommitToBranchError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         return (
             "Forked repo, created new branch, but error committing files to branch. Full error message: "
             + str(e)
         )
     except CodeSpaceCreationError as e:
-        logger.error(e)
+        logger.error(f"{e}")
         return (
             "Forked repo, created new branch, comitted files, but error creating new CodeSpace. Full error message: "
             + str(e)
