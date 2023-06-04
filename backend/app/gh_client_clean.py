@@ -8,7 +8,7 @@ import requests
 
 from loguru import logger
 from requests import Response
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Tuple
 
 from .few_shot_examples import (
     DEFAULT_ACCESS_TOKEN,
