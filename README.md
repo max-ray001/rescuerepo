@@ -340,16 +340,8 @@ Project Link: [https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSqu
 
 We'd like to thank everyone for their contributions to this project and the hackathon.
 
-<a href="https://github.com/matthew-mcateer">
-  <img src="https://github.com/matthew-mcateer.png?size=50">
-</a>
-
-<a href="https://github.com/ashenafee">
-  <img src="https://github.com/ashenafee.png?size=50">
-</a>
-
-<a href="https://github.com/Shubhamai">
-  <img src="https://github.com/Shubhamai.png?size=50">
+<a href="https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=matthew-mcateer/BioMLHackathon_ResurrectionSquad" />
 </a>
 
 <a href="https://github.com/asapsav">
