@@ -3,6 +3,7 @@ import base64
 import json
 import os
 import random
+from time import sleep
 import requests
 
 from loguru import logger
@@ -149,6 +150,7 @@ def create_new_branch(
 ) -> None:
     api_base_url: str = f"https://api.github.com/repos/{username}/{repo_name}"
     branches_api_url: str = f"{api_base_url}/git/refs/heads"
+    sleep(10)
 
     branches_response: Response = requests.get(
         branches_api_url, headers=headers
@@ -196,6 +198,7 @@ def commit_files_to_branch(
         f"https://api.github.com/repos/{repo_owner}/{repo_name}"
     )
 
+    sleep(10)
     # Get default branch and its commit SHA
     repo_info = requests.get(api_base_url, headers=headers).json()
     logger.trace(f"{repo_info}")
