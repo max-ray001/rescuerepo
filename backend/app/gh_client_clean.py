@@ -74,7 +74,7 @@ class CodeSpaceCreationError(Exception):
 
 
 def check_if_repo_exists(
-    repo_owner: str, repo_name: str, headers: dict[str, str]
+    repo_owner: str, repo_name: str, headers
 ) -> bool:
     """Check if a repo exists via GET request to GitHub API."""
     repositories_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}"
@@ -109,7 +109,7 @@ def check_if_repo_exists(
 
 
 def fork_repository(
-    username: str, repo_owner: str, repo_name: str, headers: dict[str, str]
+    username: str, repo_owner: str, repo_name: str, headers
 ) -> Tuple[int, Dict[str, Any]]:
     """Fork a repository using the GitHub API."""
     fork_api_url = (
