@@ -4,10 +4,10 @@ import os
 DEFAULT_ACCESS_TOKEN = os.environ.get("GH_ACCESS_KEY")
 DEFAULT_USERNAME = "matthew-mcateer"
 
-# Default examples
+# Default few-shot examples
 
-DEFAULT_REPO_URL = "https://github.com/kkroening/ffmpeg-python"
-DEFAULT_DOCKERFILE = """# Use the official Python base image
+DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE = "https://github.com/kkroening/ffmpeg-python"
+DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE = """# Use the official Python base image
 FROM python:3.9-slim
 
 # Set the working directory
@@ -30,7 +30,7 @@ RUN pip install --no-cache-dir -r /app/ffmpeg-python/requirements.txt
 # Optional: Set the entrypoint for the container
 ENTRYPOINT ["python"]
 """
-DEFAULT_DEVCONTAINER_JSON = """{
+DEFAULT_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE = """{
     "name": "ffmpeg-python-dev-container",
     "dockerFile": "Dockerfile",
     "settings": {
@@ -44,7 +44,7 @@ DEFAULT_DEVCONTAINER_JSON = """{
 }
 """
 
-DEFAULT_SAMPLE_SCRIPT = """
+DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE = """
 import requests
 import ffmpeg
 import tempfile
@@ -69,10 +69,10 @@ with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_video_file
 print("Video processing completed. The output video is saved as output_video.mp4.")
 """
 
-# Nextflow-Flyte Conversion examples
+# Nextflow-Flyte Conversion few-shot examples
 
-NF_TO_FLYTE_REPO_URL = "https://github.com/AstroGlia-io/sequence_records"
-NF_TO_FLYTE_DOCKERFILE = """# Use nextflow/nextflow:22.10.8 as a base image
+NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE = "https://github.com/richard-peacock/sequence_record_parsing"
+NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE = """# Use nextflow/nextflow:22.10.8 as a base image
 FROM nextflow/nextflow:22.10.8
 
 # Install dependencies
@@ -91,7 +91,7 @@ RUN pip3 install flytekit scikit-learn
 RUN curl -sL https://ctl.flyte.org/install | sudo bash -s -- -b /usr/local/bin
 
 """
-NF_TO_FLYTE_DEVCONTAINER_JSON = """{
+NF_TO_FLYTE_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE = """{
     "name": "nf-to-flyte-dev-container",
     "dockerFile": "Dockerfile",
     "settings": {
@@ -105,7 +105,7 @@ NF_TO_FLYTE_DEVCONTAINER_JSON = """{
 }
 """
 
-NF_TO_FLYTE_SAMPLE_SCRIPT = """import subprocess
+NF_TO_FLYTE_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE = """import subprocess
 from flytekit import task, workflow
 
 @task

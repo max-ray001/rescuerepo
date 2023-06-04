@@ -4,16 +4,17 @@ import requests
 import time
 
 from requests import Response
+from loguru import logger
 from typing import Any, Dict, Literal, LiteralString, Optional
 
 from github import Github
 
 from .few_shot_examples import (
     DEFAULT_ACCESS_TOKEN,
-    DEFAULT_DEVCONTAINER_JSON,
-    DEFAULT_DOCKERFILE,
-    DEFAULT_REPO_URL,
-    DEFAULT_SAMPLE_SCRIPT,
+    DEFAULT_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+    DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE,
+    DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
+    DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
     DEFAULT_USERNAME,
 )
 
@@ -30,7 +31,7 @@ def print_all_repos(hostname: str, access_token: str) -> None:
         base_url="https://{hostname}/api/v3", login_or_token=access_token
     )
     for repo in g.get_user().get_repos():
-        print(repo.name)
+        logger.info(repo.name)
 
 
 def fork_repository(
@@ -42,12 +43,12 @@ def fork_repository(
     fork_response = requests.post(fork_api_url, headers=headers)
 
     if fork_response.status_code == 202:
-        print("Repository forked successfully.")
+        logger.success("Repository forked successfully.")
         return fork_response.json()
     else:
-        print("Error forking the repository.")
-        print("Status code:", fork_response.status_code)
-        print("Error message:", fork_response.json())
+        logger.error("Error forking the repository.")
+        logger.error("Status code:", fork_response.status_code)
+        logger.error("Error message:", fork_response.json())
         return None
 
 
@@ -70,7 +71,7 @@ def create_new_branch(
             break
 
     if not main_branch_sha:
-        print("Error: Couldn't find the main branch.")
+        logger.error("Error: Couldn't find the main branch.")
         return
 
     new_branch_data = {
@@ -83,11 +84,11 @@ def create_new_branch(
     )
 
     if response.status_code == 201:
-        print(f"New branch '{new_branch_name}' created successfully.")
+        logger.success(f"New branch '{new_branch_name}' created successfully.")
     else:
-        print("Error creating the new branch.")
-        print("Status code:", response.status_code)
-        print("Error message:", response.json())
+        logger.error("Error creating the new branch.")
+        logger.error("Status code:", response.status_code)
+        logger.error("Error message:", response.json())
 
 
 def commit_files_to_branch(
@@ -190,7 +191,7 @@ def create_codespace(
     )
 
     if codespace_response.status_code == 201:
-        print(
+        logger.success(
             "Codespace creation request is successful. Waiting for the Codespace to be created..."
         )
         codespace_id: str = codespace_response.json()["id"]
@@ -208,7 +209,7 @@ def create_codespace(
         )
         codespace_status = codespace_status_response.json()["state"]
 
-    print(f"Codespace is ready. ID: {codespace_id}")
+    logger.success(f"Codespace is ready. ID: {codespace_id}")
     return str(codespace_id)
 
 
@@ -234,7 +235,7 @@ def create_codespace_with_files(
 
     # Fork the repository
     forked_repo = fork_repository(username, repo_owner, repo_name, headers)
-    print("Forked!")
+    logger.success("Forked!")
 
     # Create a new branch in the forked repository
     new_branch_name: Literal["devcontainer-setup"] = "devcontainer-setup"
@@ -249,13 +250,13 @@ def create_codespace_with_files(
         sample_script=sample_script,
         headers=headers,
     )
-    print("Branch created and committed files")
+    logger.success("Branch created and committed files")
 
     # Create a new Codespace using the new branch
     codespace_id = create_codespace(
         username, repo_name, new_branch_name, headers
     )
-    print("Created Codespace ID: ", codespace_id)
+    logger.success("Created Codespace ID: ", codespace_id)
 
     return codespace_id
 
@@ -264,9 +265,9 @@ if __name__ == "__main__":
     create_codespace_with_files(
         username=DEFAULT_USERNAME,
         access_token=DEFAULT_ACCESS_TOKEN,
-        repo_url=DEFAULT_REPO_URL,
-        docker_file=DEFAULT_DOCKERFILE,
-        devcontainer_json=DEFAULT_DEVCONTAINER_JSON,
-        sample_script=DEFAULT_SAMPLE_SCRIPT,
+        repo_url=DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
+        docker_file=DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE,
+        devcontainer_json=DEFAULT_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+        sample_script=DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
     )
 
