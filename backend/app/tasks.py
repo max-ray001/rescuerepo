@@ -7,6 +7,7 @@ import postmark
 
 from celery import Celery
 from celery.utils.log import get_task_logger
+from loguru import logger
 
 from .gh_client_clean import (
     create_codespace_with_files,
@@ -42,18 +43,18 @@ except KeyError:
     broker = DEFAULT_RABBITMQ_BROKER
     os.environ.setdefault("CELERY_BROKER_URL", DEFAULT_RABBITMQ_BROKER)
 
-os.environ.setdefault("BROKER_POOL_LIMIT", "1")
+#os.environ.setdefault("BROKER_POOL_LIMIT", "1")
 
-celery_app = Celery(
-    "tasks",
-    broker=os.environ.get("CELERY_BROKER_URL", DEFAULT_RABBITMQ_BROKER),
-)
+#celery_app = Celery(
+#    "tasks",
+#    broker=os.environ.get("CELERY_BROKER_URL", DEFAULT_RABBITMQ_BROKER),
+#)
 
 # set broker_pool_limit to 1 to prevent connection errors
-celery_app.conf.broker_pool_limit = 1
-celery_app.conf.broker_connection_max_retries = 50
+#celery_app.conf.broker_pool_limit = 1
+#celery_app.conf.broker_connection_max_retries = 50
 
-celery_logger = get_task_logger(__name__)
+#celery_logger = get_task_logger(__name__)
 
 authenticate_openai(os.environ["OPENAI_API_KEY"])
 
@@ -85,7 +86,7 @@ def send_postmark_email(email: str, github_url: str) -> bool:
         return False
 
 
-@celery_app.task
+#@celery_app.task
 def create_development_environment(
     github_repo_url: str,
     user_email: str,
@@ -94,7 +95,7 @@ def create_development_environment(
     test_mode: bool = True,
     send_email: bool = False,
 ) -> str:
-    celery_logger.info("Creating development environment")
+    logger.info("Creating development environment")
 
     # Get user
     if test_mode == False:
@@ -164,8 +165,3 @@ def create_development_environment(
         send_postmark_email(email=user_email, github_url=github_repo_url)
     return "Development environment created"
 
-
-@celery_app.task
-def add(x: Any, y: Any) -> Any:
-    celery_logger.info(f"Adding {x} + {y}")
-    return x + y

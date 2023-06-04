@@ -45,7 +45,8 @@ async def create_dev_environment(request: Request) -> Dict[str, bool]:
 
     if not (githubRepoUrl and email and access_token):
         raise HTTPException(status_code=400, detail="Missing required fields.")
-
-    create_development_environment.delay(githubRepoUrl, email, access_token)
+    
+    create_development_environment(githubRepoUrl, email, access_token)
+    #create_development_environment.delay(githubRepoUrl, email, access_token)
 
     return {"success": True}
