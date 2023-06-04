@@ -136,15 +136,21 @@ Here is a list of prerequisites you need to install before you can start using t
   ```bash
   export OPENAI_API_KEY=<your-api-key>
   ```
+
+  your [Anthropic API key](https://console.anthropic.com/account/keys)
   
-  Your [GitHub access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) (make sure it has the `codespace`and `repo` scopes):
+  ```bash
+  export ANTHROPIC_API_KEY=<your-api-key>
+  ```
+  
+  Your [GitHub access token (classic)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) (make sure it has the `codespace`and `repo` scopes):
   
   ```bash
   export GH_ACCESS_TOKEN=<your-api-key>
   ```
   <details>
 
-  <summary>Getting your properly-scoped GitHub Access token (click to expand)</summary>
+  <summary><b>Getting your properly-scoped GitHub Access token (click to expand)</b></summary>
 
   - First, log in to your GitHub account.
   - Click on your profile photo in the upper right corner of any page.
@@ -164,14 +170,14 @@ Here is a list of prerequisites you need to install before you can start using t
 
   </details>
 
-  Your CELERY_BROKER_URL:
+  Your `CELERY_BROKER_URL`:
   
   ```bash
   export CELERY_BROKER_URL=<your-api-key>
   ```
   <details>
   
-  <summary>Getting your CELERY_BROKER_URL (click to expand)</summary>
+  <summary><b>Getting your </b><code>CELERY_BROKER_URL</code><b> (click to expand)</b></summary>
 
   If you're using [RabbitMQ](http://www.rabbitmq.com/download.html), you can use `export CELERY_BROKER_URL=pyamqp://guest@localhost//`.
   The demo version of this project is using a [CloudAMQP](https://www.cloudamqp.com/) instance from Heroku (the free "Little Lemur" tier).
@@ -180,8 +186,21 @@ Here is a list of prerequisites you need to install before you can start using t
 
   </details>
 
+  Your `POSTMARK_API_KEY`:
+  
+  ```bash
+  export POSTMARK_API_KEY=<your-api-key>
+  ```
+  <details>
+  
+  <summary><b>Getting your </b><code>POSTMARK_API_KEY</code><b> (click to expand)</b></summary>
 
-3. Install the python dependencies.
+  Set up a https://postmarkapp.com/ account, and see [the developer documentation](https://postmarkapp.com/developer/api/overview).
+
+  </details>
+
+
+1. Install the python dependencies.
 
   ```bash
   $ cd backend
@@ -248,7 +267,7 @@ Sign into GitHub, after which you'll be greeted with the below page.
 
 <img src="assets/images/post_sign_in.png" alt="initial-page" height="100"  id="initial-page-next">
 
-You can enter in a GitHub repo URL of your choice. At the moment the default is `https://github.com/kkroening/ffmpeg-python`.
+You can enter in a GitHub repo URL of your choice. At the moment the default is `https://github.com/richard-peacock/sequence_record_parsing`.
 
 Include with this information your GitHub Access token (make sure it has the `repos` and `codespaces` scopes enabled), as well as your email. 
 
@@ -331,6 +350,14 @@ We'd like to thank everyone for their contributions to this project and the hack
 
 <a href="https://github.com/Shubhamai">
   <img src="https://github.com/Shubhamai.png?size=50">
+</a>
+
+<a href="https://github.com/asapsav">
+  <img src="https://github.com/asapsav.png?size=50">
+</a>
+
+<a href="https://github.com/lai-joyce">
+  <img src="https://github.com/lai-joyce.png?size=50">
 </a>
 
 
