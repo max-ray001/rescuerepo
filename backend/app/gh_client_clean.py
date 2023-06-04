@@ -10,7 +10,7 @@ from typing import Any, Dict, Optional, Tuple
 
 from github import Github
 
-from defaults import (
+from few_shot_examples import (
     DEFAULT_ACCESS_TOKEN,
     DEFAULT_DEVCONTAINER_JSON,
     DEFAULT_DOCKERFILE,

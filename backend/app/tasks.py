@@ -17,7 +17,7 @@ from .gh_client_clean import (
     CommitToBranchError,
     CodeSpaceCreationError,
 )
-from .defaults import (
+from .few_shot_examples import (
     DEFAULT_DOCKERFILE,
     DEFAULT_DEVCONTAINER_JSON,
     DEFAULT_SAMPLE_SCRIPT,

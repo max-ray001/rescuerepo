@@ -82,6 +82,8 @@ RUN apt-get update && apt-get install -y \
     python3.9 \
     python3-pip
 
+RUN git clone https://github.com/mirand863/gcsplit.git && cd gcsplit && bash install.sh && source ~/.bashrc
+
 # Install flytekit and scikit-learn
 RUN pip3 install flytekit scikit-learn
 
