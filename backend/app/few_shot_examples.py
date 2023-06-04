@@ -71,7 +71,7 @@ print("Video processing completed. The output video is saved as output_video.mp4
 
 # Nextflow-Flyte Conversion few-shot examples
 
-NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE = "https://github.com/AstroGlia-io/sequence_records"
+NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE = "https://github.com/richard-peacock/sequence_record_parsing"
 NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE = """# Use nextflow/nextflow:22.10.8 as a base image
 FROM nextflow/nextflow:22.10.8
 

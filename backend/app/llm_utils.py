@@ -2,6 +2,7 @@
 import os
 import re
 
+from loguru import logger
 from typing import List, Optional
 
 import openai
@@ -23,10 +24,10 @@ def list_openai_engines() -> Optional[List[dict]]:
         engines = response["data"]
         return engines
     except openai.error.APIError as api_error:
-        print(f"API error: {api_error}")
+        logger.error(f"API error: {api_error}")
         return None
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        logger.error(f"Unexpected error: {e}")
         return None
 
 
@@ -56,24 +57,25 @@ def get_code_block_openai(
     }
 
     try:
-        print(f"Sending request to OpenAI API with the following parameters:")
-        print(f"  Model: {model}")
-        print(f"  Prompt: {prompt}")
+        logger.info(f"Sending request to OpenAI API")
+        logger.debug(f"Using the following parameters:")
+        logger.debug(f"  Model: {model}")
+        logger.debug(f"  Prompt: {prompt}")
 
         # Make the API request
         response = openai.ChatCompletion.create(**data)
 
         # Check if there are choices in the response
         if not response.choices:
-            print(
+            logger.error(
                 "Error: The API response does not contain any generated text."
             )
             return None
 
-        print(response)
-        print(response.choices[0].message.content)
+        logger.trace(response)
+        logger.trace(response.choices[0].message.content)
         generated_text = response.choices[0].message.content.strip()
-        print("Generated text successfully received.")
+        logger.success("Generated text successfully received.")
 
         code_blocks = extract_code_blocks_from_chatgpt_output(generated_text)
         if len(code_blocks) > 0:
@@ -82,17 +84,17 @@ def get_code_block_openai(
             return generated_text
 
     except openai.error.APIError as api_error:
-        print(f"API error: {api_error}")
+        logger.error(f"API error: {api_error}")
         return None
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        logger.error(f"Unexpected error: {e}")
         return None
 
 
 if __name__ == "__main__":
     authenticate_openai(os.environ["OPENAI_API_TOKEN"])
-    print(list_openai_engines())
-    print(
+    logger.debug(list_openai_engines())
+    logger.debug(
         get_code_block_openai(
             "Generate a sample python code that adds two numbers"
         )

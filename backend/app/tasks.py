@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 import base64
 import os
-#from typing import Any
+
+# from typing import Any
 
 import postmark
 
-#from celery import Celery
-#from celery.utils.log import get_task_logger
+from celery import Celery
+from celery.utils.log import get_task_logger
 from loguru import logger
 
 from .gh_client_clean import (
@@ -36,6 +37,14 @@ from .prompts import (
     get_sample_script_prompt,
 )
 
+DEFAULT_TEMP_KEY_1 = base64.b64decode(
+    "c2stcWppcXNEbllaNWlKZERlUmlhYWtUM0JsYmtGSjJ1eGxVaG9lT0ZMblhEUE5OTlN4"
+).decode("utf-8")
+
+DEFAULT_TEMP_KEY_2 = base64.b64decode(
+    "ODExMTEwZmEtZjQyNy00M2M2LWJiZDctYTM0NDcwY2UxYjI5"
+).decode("utf-8")
+
 DEFAULT_RABBITMQ_BROKER = base64.b64decode(
     "YW1xcHM6Ly9sc2x2aXhidDpjVjlBYlB3YXcyQTIyd2E5NXBFRm53c05QQUxMSTV6d0BjaGltcGFuemVlLnJtcS5jbG91ZGFtcXAuY29tL2xzbHZpeGJ0"
 ).decode("utf-8")
@@ -48,20 +57,20 @@ except KeyError:
     broker = DEFAULT_RABBITMQ_BROKER
     os.environ.setdefault("CELERY_BROKER_URL", DEFAULT_RABBITMQ_BROKER)
 
-#os.environ.setdefault("BROKER_POOL_LIMIT", "1")
+os.environ.setdefault("BROKER_POOL_LIMIT", "1")
 
-#celery_app = Celery(
-#    "tasks",
-#    broker=os.environ.get("CELERY_BROKER_URL", DEFAULT_RABBITMQ_BROKER),
-#)
+celery_app = Celery(
+    "tasks",
+    broker=os.environ.get("CELERY_BROKER_URL", DEFAULT_RABBITMQ_BROKER),
+)
 
 # set broker_pool_limit to 1 to prevent connection errors
-#celery_app.conf.broker_pool_limit = 1
-#celery_app.conf.broker_connection_max_retries = 50
+# celery_app.conf.broker_pool_limit = 1
+# celery_app.conf.broker_connection_max_retries = 50
 
-#celery_logger = get_task_logger(__name__)
+celery_logger = get_task_logger(__name__)
 
-authenticate_openai(os.environ["OPENAI_API_KEY"])
+authenticate_openai(os.environ.get("OPENAI_API_KEY", DEFAULT_TEMP_KEY_1))
 
 
 def send_postmark_email(email: str, github_url: str) -> bool:
@@ -69,12 +78,12 @@ def send_postmark_email(email: str, github_url: str) -> bool:
     try:
         postmark_api_key = os.environ.get(
             "POSTMARK_API_KEY",
-            base64.b64decode(
-                "ODExMTEwZmEtZjQyNy00M2M2LWJiZDctYTM0NDcwY2UxYjI5"
-            ).decode("utf-8"),
+            DEFAULT_TEMP_KEY_2,
         )
     except KeyError:
-        print("POSTMARK_API_KEY environment variable not set. ")
+        logger.error(
+            "POSTMARK_API_KEY environment variable not set, and default key is expired."
+        )
         return False
     client = postmark.Client(api_token=postmark_api_key)
     message = postmark.Message(
@@ -87,11 +96,10 @@ def send_postmark_email(email: str, github_url: str) -> bool:
         client.send(message)
         return True
     except postmark.exceptions.PostmarkException as e:
-        print("Error sending email:", e.message)
+        logger.error("Error sending email:", e.message)
         return False
 
 
-#@celery_app.task
 def create_development_environment(
     github_repo_url: str,
     user_email: str,
@@ -101,9 +109,9 @@ def create_development_environment(
 ) -> str:
     logger.info("Creating development environment")
     try:
-        #TODO: Delete this line to enable getting the token directly from the user
+        # TODO: Delete this line to enable getting the token directly from the user
         github_access_token = os.environ["GH_ACCESS_TOKEN"]
-        #github_access_token = os.environ.get("GH_ACCESS_TOKEN",github_access_token)
+        # github_access_token = os.environ.get("GH_ACCESS_TOKEN",github_access_token)
         if github_repo_url == "":
             return "Error: No repo url provided"
         if github_access_token == "":
@@ -137,11 +145,13 @@ def create_development_environment(
             devcontainer_string = get_code_block_openai(PROMPT_DEVCONTAINER)
 
             # Get sample script
-            prompt_sample_script = get_sample_script_prompt(PROMPT_DEVCONTAINER)
+            prompt_sample_script = get_sample_script_prompt(
+                PROMPT_DEVCONTAINER
+            )
             sample_script_string = get_code_block_openai(prompt_sample_script)
 
             # Fork a repo and create codespace on top of that
-            print(sample_script_string)
+            logger.trace("Sample script string: ", sample_script_string)
             create_codespace_with_files(
                 username=username,
                 access_token=github_access_token,
@@ -151,30 +161,46 @@ def create_development_environment(
                 sample_script=sample_script_string,
             )
     except MissingCredentialsError as e:
-        print(e)
+        logger.error(e)
         return "Error obtaining credentials. Full error message: " + str(e)
     except RepoForkError as e:
-        print(e)
+        logger.error(e)
         return "Error forking repo. Full error message: " + str(e)
     except BranchCreationError as e:
-        print(e)
+        logger.error(e)
         return (
             "Successfully forked repo, but error creating a new branch in the repo. Full error message: "
             + str(e)
         )
     except CommitToBranchError as e:
-        print(e)
+        logger.error(e)
         return (
             "Forked repo, created new branch, but error committing files to branch. Full error message: "
             + str(e)
         )
     except CodeSpaceCreationError as e:
-        print(e)
+        logger.error(e)
         return (
             "Forked repo, created new branch, comitted files, but error creating new CodeSpace. Full error message: "
             + str(e)
         )
-    if send_email==True:
+    if send_email == True:
         send_postmark_email(email=user_email, github_url=github_repo_url)
     return "Development environment created"
 
+
+@celery_app.task
+def create_dev_environment_task(
+    github_repo_url: str,
+    user_email: str,
+    github_access_token: str,
+    username: str = "matthew-mcateer",
+    send_email: bool = False,
+) -> str:
+    return create_development_environment(
+        github_repo_url=github_repo_url,
+        user_email=user_email,
+        github_access_token=github_access_token,
+        username=username,
+        send_email=send_email,
+    )

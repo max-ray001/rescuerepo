@@ -1,7 +1,24 @@
+import os
+
 import uvicorn
 from dotenv import load_dotenv
+from loguru import logger
 
-# Load environment variables from .env file
+filepaths = ['backend/app/.env', 'app/.env', 'backend/.env','.env']
+
+found_path = False
+for filepath in filepaths:
+    if os.path.exists(filepath):
+        load_dotenv(filepath)
+        found_path = True
+        print(f"Loaded dotenv file: {filepath}")
+        break
+
+if not found_path:
+    load_dotenv()
+    logger.debug("Loaded default dotenv file.")
+
+
 load_dotenv()
 
 if __name__ == "__main__":
