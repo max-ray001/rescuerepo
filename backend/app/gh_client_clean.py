@@ -10,7 +10,6 @@ from loguru import logger
 from requests import Response
 from typing import Any, Dict, Optional, Tuple
 
-from github import Github
 from .few_shot_examples import (
     DEFAULT_ACCESS_TOKEN,
     DEFAULT_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
@@ -146,7 +145,7 @@ def create_new_branch(
     username: str,
     repo_name: str,
     new_branch_name: str,
-    headers: dict[str, str],
+    headers,
 ) -> None:
     api_base_url: str = f"https://api.github.com/repos/{username}/{repo_name}"
     branches_api_url: str = f"{api_base_url}/git/refs/heads"
@@ -192,7 +191,7 @@ def commit_files_to_branch(
     devcontainer_json_content: str,
     dockerfile_content: str,
     sample_script_content: str,
-    headers: dict[str, str],
+    headers,
 ) -> None:
     api_base_url: str = (
         f"https://api.github.com/repos/{repo_owner}/{repo_name}"
@@ -329,7 +328,7 @@ def create_new_github_codespace(
     repo_owner: str,
     repo_name: str,
     new_branch_name: str,
-    headers: dict[str, str],
+    headers,
 ) -> str:
     api_base_url: str = (
         f"https://api.github.com/repos/{repo_owner}/{repo_name}/codespaces"
