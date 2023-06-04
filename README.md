@@ -283,7 +283,7 @@ If you navigate to the [GitHub Codespaces Dashboard](https://github.com/codespac
 
 The scope of this project is admittedly quite large, so we've broken it down into a few phases:
 
-- ✅ Embedding Map of Bioinformatics tools ( [view here](https://fancy-baklava-ee6d10.netlify.app/3d_embedding_exploration_tool) )
+- ✅ Embedding Map of Bioinformatics tools ( [view here](https://fancy-baklava-ee6d10.netlify.app/3d_embedding_exploration_tool), see the [notebook for its creation here](assets/notebooks/OpenAI_Bioinformatics_Tool_Embeddings.ipynb) )
 - ✅ Setting up a workflow for generating dev environments from an arbitrary repo
     - ✅ Creating a fork with a `dockerfile`, `devcontainer.json`, and anything else needed for a GitHub Codespace
   - ✅ Automatically Generated Dev Environments using GPT-4 (or Claude 100k)
@@ -400,7 +400,7 @@ We would also like to thank the organizers of the [Bio X AI Hackathon](https://h
 [lines-of-code-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
 [code-smells-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=code_smells&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
 [code-smells-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
-[security-rating-shield]: hhttps://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=security_rating&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
+[security-rating-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=security_rating&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
 [security-rating-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
 [bugs-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=bugs&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
 [bugs-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
