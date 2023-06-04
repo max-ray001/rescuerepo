@@ -5,9 +5,9 @@ import axios from 'axios';
 
 
 
-const isDevelopment = false;
+const isDevelopment = true;
 
-var backendUrl = "https://resurrection-squad-demo.herokuapp.com";
+var backendUrl = "https://biomlspace-1-i6786382.deta.app";
 
 if (isDevelopment) {
   backendUrl = "http://localhost:8000"

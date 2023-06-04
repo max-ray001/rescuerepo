@@ -160,3 +160,6 @@ nextjs/next-env.d.ts
 
 # Secrets
 secrets.sh
+
+.space
+Spacefile
