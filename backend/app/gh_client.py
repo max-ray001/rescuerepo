@@ -35,7 +35,7 @@ def print_all_repos(hostname: str, access_token: str) -> None:
 
 
 def fork_repository(
-    username: str, repo_owner: str, repo_name: str, headers: dict[str, str]
+    username: str, repo_owner: str, repo_name: str, headers
 ) -> Optional[Dict[str, Any]]:
     fork_api_url = (
         f"https://api.github.com/repos/{repo_owner}/{repo_name}/forks"
@@ -56,7 +56,7 @@ def create_new_branch(
     username: str,
     repo_name: str,
     new_branch_name: str,
-    headers: dict[str, str],
+    headers,
 ) -> None:
     api_base_url = f"https://api.github.com/repos/{username}/{repo_name}"
     branches_api_url = f"{api_base_url}/git/refs/heads"
@@ -98,7 +98,7 @@ def commit_files_to_branch(
     devcontainer_json: str,
     docker_file: str,
     sample_script: str,
-    headers: dict[str, str],
+    headers,
 ) -> None:
     # Encode file contents as Base64
     devcontainer_json_content: str = base64.b64encode(
@@ -175,7 +175,7 @@ def commit_files_to_branch(
 
 
 def create_codespace(
-    username: str, repo_name: str, branch_name: str, headers: dict[str, str]
+    username: str, repo_name: str, branch_name: str, headers
 ) -> str:
     api_base_url: LiteralString = f"https://api.github.com"
 
@@ -227,7 +227,7 @@ def create_codespace_with_files(
     repo_name: str = repo_parts[-1].replace(".git", "")
 
     # Configure headers for the GitHub API
-    headers: dict[str, str] = {
+    headers = {
         "Authorization": f"token {access_token}",
         "Accept": "application/vnd.github+json",
         "Content-Type": "application/json",
