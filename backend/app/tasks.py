@@ -94,9 +94,7 @@ def create_development_environment(
 ) -> str:
     logger.info("Creating development environment")
     try:
-        # TODO: Delete this line to enable getting the token directly from the user
-        github_access_token = os.environ["GH_ACCESS_TOKEN"]
-        # github_access_token = os.environ.get("GH_ACCESS_TOKEN",github_access_token)
+        github_access_token = os.environ.get("GH_ACCESS_TOKEN",github_access_token)
         if github_repo_url == "":
             return "Error: No repo url provided"
         if github_access_token == "":
