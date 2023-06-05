@@ -10,7 +10,7 @@ from celery import Celery
 from celery.utils.log import get_task_logger
 from loguru import logger
 
-from .gh_client_clean import (
+from .gh_client import (
     create_codespace_with_files,
     MissingCredentialsError,
     RepoForkError,
@@ -41,31 +41,15 @@ from .prompts import (
     get_sample_script_prompt,
 )
 
-DEFAULT_TEMP_KEY_1 = base64.b64decode(
-    "c2stcWppcXNEbllaNWlKZERlUmlhYWtUM0JsYmtGSjJ1eGxVaG9lT0ZMblhEUE5OTlN4"
-).decode("utf-8")
-
-DEFAULT_TEMP_KEY_2 = base64.b64decode(
-    "ODExMTEwZmEtZjQyNy00M2M2LWJiZDctYTM0NDcwY2UxYjI5"
-).decode("utf-8")
-
-DEFAULT_RABBITMQ_BROKER = base64.b64decode(
-    "YW1xcHM6Ly9sc2x2aXhidDpjVjlBYlB3YXcyQTIyd2E5NXBFRm53c05QQUxMSTV6d0BjaGltcGFuemVlLnJtcS5jbG91ZGFtcXAuY29tL2xzbHZpeGJ0"
-).decode("utf-8")
-
 # Try getting the environment variable `CELERY_BROKER_URL` to configure broker url
 # and if it doesn't exist, set it to the default value
-try:
-    broker = os.environ["CELERY_BROKER_URL"]
-except KeyError:
-    broker = DEFAULT_RABBITMQ_BROKER
-    os.environ.setdefault("CELERY_BROKER_URL", DEFAULT_RABBITMQ_BROKER)
+broker = os.environ["CELERY_BROKER_URL"]
 
 os.environ.setdefault("BROKER_POOL_LIMIT", "1")
 
 celery_app = Celery(
     "tasks",
-    broker=os.environ.get("CELERY_BROKER_URL", DEFAULT_RABBITMQ_BROKER),
+    broker=os.environ["CELERY_BROKER_URL"],
 )
 
 # set broker_pool_limit to 1 to prevent connection errors
@@ -74,16 +58,13 @@ celery_app = Celery(
 
 celery_logger = get_task_logger(__name__)
 
-authenticate_openai(os.environ.get("OPENAI_API_KEY", DEFAULT_TEMP_KEY_1))
+authenticate_openai(os.environ["OPENAI_API_KEY"])
 
 
 def send_postmark_email(email: str, github_url: str) -> bool:
     """This function sends a welcome email to the user"""
     try:
-        postmark_api_key = os.environ.get(
-            "POSTMARK_API_KEY",
-            DEFAULT_TEMP_KEY_2,
-        )
+        postmark_api_key = os.environ["POSTMARK_API_KEY"]
     except KeyError:
         logger.error(
             "POSTMARK_API_KEY environment variable not set, and default key is expired."
@@ -91,7 +72,7 @@ def send_postmark_email(email: str, github_url: str) -> bool:
         return False
     client = postmark.Client(api_token=postmark_api_key)
     message = postmark.Message(
-        sender="matthew@astroglia.io",
+        sender="example@example.com",
         to=email,
         subject="Your development environment is ready!",
         text_body=f"Your codespace of your fork of {github_url} is ready!\n\nYou can access it here https://github.com/codespaces",

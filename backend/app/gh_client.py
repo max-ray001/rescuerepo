@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 import base64
+import json
+import os
+import random
+from time import sleep
 import requests
-import time
 
-from requests import Response
 from loguru import logger
-from typing import Any, Dict, Literal, LiteralString, Optional
-
-from github import Github
+from requests import Response
+from typing import Any, Dict, Tuple
 
 from .few_shot_examples import (
     DEFAULT_ACCESS_TOKEN,
@@ -16,40 +17,128 @@ from .few_shot_examples import (
     DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
     DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
     DEFAULT_USERNAME,
+    NF_TO_FLYTE_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+    NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE,
+    NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE,
+    NF_TO_FLYTE_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
 )
 
 
-def create_gh_client(access_token: str) -> Github:
-    """Create a Github client instance using an access token"""
-    return Github(access_token)
+class MissingCredentialsError(Exception):
+    """Exception raised for errors in setting credentials."""
+
+    def __init__(
+        self,
+        message="An error occurred when obtaining credentials or access keys",
+    ):
+        self.message = message
+        super().__init__(self.message)
 
 
-def print_all_repos(hostname: str, access_token: str) -> None:
-    """Print all repos for the authenticated user"""
-    # Github Enterprise with custom hostname
-    g = Github(
-        base_url="https://{hostname}/api/v3", login_or_token=access_token
-    )
-    for repo in g.get_user().get_repos():
-        logger.info(f"{repo.name}")
+class RepoForkError(Exception):
+    """Exception raised for errors in the forking process."""
+
+    def __init__(self, message="An error occurred when forking a GitHub Repo"):
+        self.message = message
+        super().__init__(self.message)
+
+
+class BranchCreationError(Exception):
+    """Exception raised for errors in the branch creation process."""
+
+    def __init__(
+        self, message="An error occurred when creating a branch of a repo"
+    ):
+        self.message = message
+        super().__init__(self.message)
+
+
+class CommitToBranchError(Exception):
+    """Exception raised for errors in the commit creation process."""
+
+    def __init__(
+        self, message="An error occurred when creating a commit of a branch"
+    ):
+        self.message = message
+        super().__init__(self.message)
+
+
+class CodeSpaceCreationError(Exception):
+    """Exception raised for errors in the codespace creation process."""
+
+    def __init__(
+        self, message="An error occurred when creating a GitHub codespace"
+    ):
+        self.message = message
+        super().__init__(self.message)
+
+
+def check_if_repo_exists(
+    repo_owner: str, repo_name: str, headers
+) -> bool:
+    """Check if a repo exists via GET request to GitHub API."""
+    repositories_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}"
+    repo_response = requests.get(repositories_url, headers=headers)
+
+    # print the response body
+    if repo_response.status_code == 200:
+        logger.info("Repo exists!!")
+        return True
+    else:
+        if repo_response.status_code == 301:
+            logger.info(
+                f"Error 301: Repository {repo_owner}/{repo_name} moved permenantly\n{repo_response.json()}",
+            )
+        elif repo_response.status_code == 401:
+            raise RepoForkError(
+                f"Error 401: Bad Credentials\n{str(repo_response.json())}\n{str(headers)}"
+            )
+        elif repo_response.status_code == 403:
+            logger.info(
+                f"Error 403: Repository {repo_owner}/{repo_name} not found. Forbidden\n {repo_response.json()}",
+            )
+        elif repo_response.status_code == 404:
+            logger.info(
+                f"Repository with name {repo_owner}/{repo_name} doesn't exist yet."
+            )
+        else:
+            logger.error(
+                f"Unknown error checking repository {repo_owner}/{repo_name}\n {str(repo_response.json())}"
+            )
+    return False
 
 
 def fork_repository(
     username: str, repo_owner: str, repo_name: str, headers
-) -> Optional[Dict[str, Any]]:
+) -> Tuple[int, Dict[str, Any]]:
+    """Fork a repository using the GitHub API."""
     fork_api_url = (
         f"https://api.github.com/repos/{repo_owner}/{repo_name}/forks"
     )
     fork_response = requests.post(fork_api_url, headers=headers)
-
+    # Define the required parameters
+    fork_data = {"name": repo_name, "default_branch_only": True}
+    # Send the POST request
+    fork_response = requests.post(
+        fork_api_url, headers=headers, data=json.dumps(fork_data)
+    )
     if fork_response.status_code == 202:
         logger.success("Repository forked successfully.")
-        return fork_response.json()
     else:
-        logger.error("Error forking the repository.")
-        logger.error(f"Status code: {fork_response.status_code}")
+        if fork_response.status_code == 403:
+            logger.warning("Error forking the repository. Bad Request")
+        elif fork_response.status_code == 404:
+            logger.warning("Error forking the repository. Resource not found")
+        elif fork_response.status_code == 422:
+            logger.warning(
+                "Error forking the repository. Validation failed, or the endpoint has been spammed."
+            )
+        else:
+            logger.warning("Error forking the repository.")
+
+        logger.error(f"Status code: {fork_response.status_code}", )
         logger.error(f"Error message: {fork_response.json()}")
-        return None
+    return int(fork_response.status_code), fork_response.json()
 
 
 def create_new_branch(
@@ -58,14 +147,18 @@ def create_new_branch(
     new_branch_name: str,
     headers,
 ) -> None:
-    api_base_url = f"https://api.github.com/repos/{username}/{repo_name}"
-    branches_api_url = f"{api_base_url}/git/refs/heads"
+    api_base_url: str = f"https://api.github.com/repos/{username}/{repo_name}"
+    branches_api_url: str = f"{api_base_url}/git/refs/heads"
+    sleep(10)
 
-    response = requests.get(branches_api_url, headers=headers)
-    branches = response.json()
+    branches_response: Response = requests.get(
+        branches_api_url, headers=headers
+    )
+    branches = branches_response.json()
 
     main_branch_sha = None
     for branch in branches:
+        logger.trace(f"{branch}")
         if branch["ref"] == "refs/heads/main":
             main_branch_sha = branch["object"]["sha"]
             break
@@ -74,143 +167,207 @@ def create_new_branch(
         logger.error("Error: Couldn't find the main branch.")
         return
 
-    new_branch_data = {
+    new_branch_data: dict[str, Any] = {
         "ref": f"refs/heads/{new_branch_name}",
         "sha": main_branch_sha,
     }
 
-    response = requests.post(
+    new_branch_response: Response = requests.post(
         branches_api_url, headers=headers, json=new_branch_data
     )
 
-    if response.status_code == 201:
+    if new_branch_response.status_code == 201:
         logger.success(f"New branch '{new_branch_name}' created successfully.")
     else:
         logger.error("Error creating the new branch.")
-        logger.error(f"Status code: {response.status_code}")
-        logger.error(f"Error message: {response.json()}")
+        logger.error(f"Status code: {new_branch_response.status_code}")
+        logger.error(f"Error message: {new_branch_response.json()}")
 
 
 def commit_files_to_branch(
-    username: str,
+    repo_owner: str,
     repo_name: str,
-    branch_name: str,
-    devcontainer_json: str,
-    docker_file: str,
-    sample_script: str,
+    new_branch_name: str,
+    devcontainer_json_content: str,
+    dockerfile_content: str,
+    sample_script_content: str,
     headers,
 ) -> None:
-    # Encode file contents as Base64
-    devcontainer_json_content: str = base64.b64encode(
-        devcontainer_json.encode("utf-8")
-    ).decode("utf-8")
-    docker_file_content: str = base64.b64encode(
-        docker_file.encode("utf-8")
-    ).decode("utf-8")
-    sample_script_content: str = base64.b64encode(
-        sample_script.encode("utf-8")
-    ).decode("utf-8")
-
-    # Get the latest commit on the main branch
-    api_base_url: str = f"https://api.github.com/repos/{username}/{repo_name}"
-    latest_commit_response: Response = requests.get(
-        f"{api_base_url}/git/ref/heads/main", headers=headers
+    api_base_url: str = (
+        f"https://api.github.com/repos/{repo_owner}/{repo_name}"
     )
-    latest_commit_sha = latest_commit_response.json()["object"]["sha"]
 
-    # Get the tree of the latest commit
-    latest_commit_tree_response: Response = requests.get(
-        f"{api_base_url}/git/trees/{latest_commit_sha}", headers=headers
-    )
-    latest_commit_tree_sha = latest_commit_tree_response.json()["sha"]
+    sleep(10)
+    # Get default branch and its commit SHA
+    repo_info = requests.get(api_base_url, headers=headers).json()
+    logger.trace(f"{repo_info}")
+    default_branch = repo_info["default_branch"]
+    default_branch_sha = requests.get(
+        f"{api_base_url}/git/ref/heads/master", headers=headers
+    ).json()["object"]["sha"]
+
+    devcontainer_json_blob_sha = requests.post(
+        f"{api_base_url}/git/blobs",
+        headers=headers,
+        json={
+            "content": base64.b64encode(
+                devcontainer_json_content.encode()
+            ).decode(),
+            "encoding": "base64",
+        },
+    ).json()["sha"]
+
+    dockerfile_blob_sha = requests.post(
+        f"{api_base_url}/git/blobs",
+        headers=headers,
+        json={
+            "content": base64.b64encode(dockerfile_content.encode()).decode(),
+            "encoding": "base64",
+        },
+    ).json()["sha"]
+
+    sample_script_blob_sha = requests.post(
+        f"{api_base_url}/git/blobs",
+        headers=headers,
+        json={
+            "content": base64.b64encode(
+                sample_script_content.encode()
+            ).decode(),
+            "encoding": "base64",
+        },
+    ).json()["sha"]
+
+    # Get latest commit tree
+    latest_commit_tree_sha = requests.get(
+        f"{api_base_url}/git/commits/{default_branch_sha}", headers=headers
+    ).json()["tree"]["sha"]
+    logger.info(f"Latest commit tree SHA: {latest_commit_tree_sha}")
 
     # Create a new tree with the new blobs
-    new_tree_data: dict[str, Any] = {
-        "base_tree": latest_commit_tree_sha,
-        "tree": [
-            {
-                "path": ".devcontainer/devcontainer.json",
-                "mode": "100644",
-                "type": "blob",
-                "content": devcontainer_json,
-            },
-            {
-                "path": "Dockerfile",
-                "mode": "100644",
-                "type": "blob",
-                "content": docker_file,
-            },
-            {
-                "path": "sample_script.py",
-                "mode": "100644",
-                "type": "blob",
-                "content": sample_script,
-            },
-        ],
-    }
-    new_tree_response: Response = requests.post(
-        f"{api_base_url}/git/trees", headers=headers, json=new_tree_data
-    )
-    new_tree_sha = new_tree_response.json()["sha"]
-
-    # Create a new commit
-    new_commit_data: dict[str, Any] = {
-        "message": "Add devcontainer files",
-        "parents": [latest_commit_sha],
-        "tree": new_tree_sha,
-    }
-    new_commit_response: Response = requests.post(
-        f"{api_base_url}/git/commits", headers=headers, json=new_commit_data
-    )
-    new_commit_sha: Any = new_commit_response.json()["sha"]
-
-    # Create the new branch with the new commit
-    new_branch_data: dict[str, Any] = {
-        "ref": f"refs/heads/{branch_name}",
-        "sha": new_commit_sha,
-    }
-    _ = requests.post(
-        f"{api_base_url}/git/refs", headers=headers, json=new_branch_data
+    new_tree_response = requests.post(
+        f"{api_base_url}/git/trees",
+        headers=headers,
+        json={
+            "base_tree": latest_commit_tree_sha,
+            "tree": [
+                {
+                    "path": ".devcontainer/devcontainer.json",
+                    "mode": "100644",
+                    "type": "blob",
+                    "sha": devcontainer_json_blob_sha,
+                },
+                {
+                    "path": ".devcontainer/Dockerfile",
+                    "mode": "100644",
+                    "type": "blob",
+                    "sha": dockerfile_blob_sha,
+                },
+                {
+                    "path": "sample_script.py",
+                    "mode": "100644",
+                    "type": "blob",
+                    "sha": sample_script_blob_sha,
+                },
+            ],
+        },
     )
 
-
-def create_codespace(
-    username: str, repo_name: str, branch_name: str, headers
-) -> str:
-    api_base_url: LiteralString = f"https://api.github.com"
-
-    # Set up the Codespace creation request
-    codespace_data = {
-        "repository": f"{username}/{repo_name}",
-        "branch": branch_name,
-    }
-
-    # Send the Codespace creation request
-    codespace_response = requests.post(
-        f"{api_base_url}/user/codespaces", headers=headers, json=codespace_data
-    )
-
-    if codespace_response.status_code == 201:
-        logger.success(
-            "Codespace creation request is successful. Waiting for the Codespace to be created..."
-        )
-        codespace_id: str = codespace_response.json()["id"]
+    if new_tree_response.status_code == 201:
+        new_tree = new_tree_response.json()
+        logger.success("New tree created successfully.")
+        new_tree_sha = new_tree["sha"]
+        logger.info(f"New tree SHA: {new_tree_sha}")
     else:
-        raise Exception(
-            f"Error creating Codespace: {codespace_response.status_code} - {codespace_response.json()['message']}"
-        )
+        logger.error("Error creating the new tree.")
+        logger.error(f"Status code: {new_tree_response.status_code}")
+        logger.error(f"Error message: {new_tree_response.json()}")
+        exit(1)
 
-    # Poll the Codespace status until it is ready
-    codespace_status: str = "creating"
-    while codespace_status != "ready":
-        time.sleep(5)
-        codespace_status_response = requests.get(
-            f"{api_base_url}/codespaces/{codespace_id}", headers=headers
-        )
-        codespace_status = codespace_status_response.json()["state"]
+    # Create a new commit with the new tree
+    new_commit_response = requests.post(
+        f"{api_base_url}/git/commits",
+        headers=headers,
+        json={
+            "message": "Add devcontainer.json and Dockerfile",
+            "tree": new_tree["sha"],
+            "parents": [default_branch_sha],
+        },
+    )
 
-    logger.success(f"Codespace is ready. ID: {codespace_id}")
-    return str(codespace_id)
+    if new_commit_response.status_code == 201:
+        new_commit = new_commit_response.json()
+        logger.success("New commit created successfully.")
+        new_commit_sha = new_commit["sha"]
+        logger.info(f"New commit SHA: {new_commit_sha}")
+    else:
+        logger.error("Error creating the new commit.")
+        logger.error(f"Status code: {new_commit_response.status_code}")
+        logger.error(f"Error message: {new_commit_response.json()}")
+        exit(1)
+
+    # Create new branch on the forked repository with the new commit SHA
+    new_branch_ref = f"refs/heads/{new_branch_name}"
+    create_branch_response = requests.post(
+        f"{api_base_url}/git/refs",
+        headers=headers,
+        json={"ref": new_branch_ref, "sha": new_commit["sha"]},
+    )
+
+    if create_branch_response.status_code == 201:
+        logger.success(
+            f"New branch '{new_branch_name}' created successfully on the forked repository with devcontainer.json and Dockerfile."
+        )
+    else:
+        logger.error("Error creating the new branch on the forked repository.")
+        logger.error(f"Status code: {create_branch_response.status_code}")
+        logger.error(f"Error message: {create_branch_response.json()}")
+        exit(1)
+
+
+def create_new_github_codespace(
+    repo_owner: str,
+    repo_name: str,
+    new_branch_name: str,
+    headers,
+) -> str:
+    api_base_url: str = (
+        f"https://api.github.com/repos/{repo_owner}/{repo_name}/codespaces"
+    )
+
+    create_codespace_payload = {"ref": new_branch_name}
+
+    create_codespace_response = requests.post(
+        api_base_url, headers=headers, json=create_codespace_payload
+    )
+
+    if create_codespace_response.status_code == 201:
+        logger.success("Codespace creation request is successful.")
+        logger.info("Waiting for the Codespace to be created...")
+        codespace = create_codespace_response.json()
+
+        # Poll the Codespace's status until it becomes 'available'
+        codespace_id = codespace["id"]
+        logger.trace(f"GitHub Codespace ID: {codespace_id}")
+        logger.trace(f"GitHub Codespace info:\n {json.dumps(codespace, indent=4)}")
+
+        codespace_status = codespace["state"]
+        logger.info(f"Codespace Status: {codespace_status}")
+        return codespace_id
+        # while codespace_status != 'Available':
+        #    time.sleep(10)
+        #    codespace_response = requests.get(f'{api_base_url}/{codespace_id}', headers=headers)
+        #    codespace = codespace_response.json()
+        #    import ipdb
+        #    ipdb.set_trace()
+        #    codespace_status = codespace['state']
+        #    logger.info(f"Current Codespace status: {codespace_status}")
+        #
+        # logger.success(f"Codespace is available! ID: {codespace_id}")
+
+    else:
+        logger.error("Error creating the Codespace.")
+        logger.error(f"Status code: {create_codespace_response.status_code}")
+        logger.error(f"Error message: {create_codespace_response.json()}")
 
 
 def create_codespace_with_files(
@@ -220,54 +377,163 @@ def create_codespace_with_files(
     docker_file: str,
     devcontainer_json: str,
     sample_script: str,
-):
+) -> str:
     # Extract repository owner and name from the repo URL
-    repo_parts: list[str] = repo_url.split("/")
-    repo_owner: str = repo_parts[-2]
-    repo_name: str = repo_parts[-1].replace(".git", "")
+    repo_parts = repo_url.split("/")
+    logger.trace(f"repo_parts {repo_parts}")
+    repo_owner = repo_parts[-2]
+    logger.trace(f"repo_owner {repo_owner}")
+    repo_name = repo_parts[-1].replace(".git", "")
+    logger.trace(f"repo_name: {repo_name}")
+
+    # check that access token has been set
+    if not access_token:
+        logger.warning("access_token is None")
+        access_token = os.environ.get("GH_ACCESS_KEY")
+        if not access_token:
+            raise MissingCredentialsError(
+                "access_token is None and 'GH_ACCESS_KEY' environment variable not set."
+            )
 
     # Configure headers for the GitHub API
     headers = {
-        "Authorization": f"token {access_token}",
         "Accept": "application/vnd.github+json",
-        "Content-Type": "application/json",
+        "Authorization": f"Bearer {access_token}",
+        "X-GitHub-Api-Version": "2022-11-28",
     }
 
-    # Fork the repository
-    forked_repo = fork_repository(username, repo_owner, repo_name, headers)
-    logger.success("Forked!")
+    try:
+        # Check if the repo we're trying to fork exists
+        origin_repo_exists = check_if_repo_exists(
+            repo_owner=repo_owner, repo_name=repo_name, headers=headers
+        )
+        # Check that we haven't already created a fork with the same name as the original
+        new_repo_exists = check_if_repo_exists(
+            repo_owner=username, repo_name=repo_name, headers=headers
+        )
+    except RepoForkError as e:
+        logger.error(f"{e}")
+        raise e
+
+    if (not new_repo_exists) and origin_repo_exists:
+        # Fork the repository
+        response_code, forked_repo = fork_repository(
+            username=username,
+            repo_owner=repo_owner,
+            repo_name=repo_name,
+            headers=headers,
+        )
+        logger.trace(f"{forked_repo}")
+        if response_code == 202:
+            forked_repo_url = forked_repo["html_url"]
+            logger.success(f"Forked! Fork now available at {forked_repo_url}")
+        else:
+            if (
+                forked_repo["message"]
+                == "Resource not accessible by personal access token"
+            ):
+                logger.error("You do not have permissions to fork this repository.")
+                logger.error(
+                    "GitHub returned the following error message: ",
+                    forked_repo,
+                )
+            else:
+                logger.error("Error forking the repository.")
+                logger.error(
+                    f"GitHub returned an error code {response_code} error message: ",
+                    forked_repo["message"],
+                )
+            raise RepoForkError(
+                f"Error forking the repository {repo_name}.\nResponse code {response_code}.\nerror message: "
+                + str(forked_repo["message"]),
+            )
+
+    else:
+        logger.info(f"Repository with the name {repo_name} already exists.")
 
     # Create a new branch in the forked repository
-    new_branch_name: Literal["devcontainer-setup"] = "devcontainer-setup"
+    new_branch_name = "devcontainer-setup-" + str(random.randint(1, 1000))
+    try:
+        create_new_branch(
+            username=username,
+            repo_name=repo_name,
+            new_branch_name=new_branch_name,
+            headers=headers,
+        )
+    except BranchCreationError as e:
+        logger.error(f"{e}")
+        raise BranchCreationError(
+            f"Error creating the new branch {new_branch_name} in the repository {repo_name}."
+        )
 
     # Commit devcontainer.json, Dockerfile, and sample_script to the new branch
-    commit_files_to_branch(
-        username=username,
-        repo_name=repo_name,
-        new_branch_name=new_branch_name,
-        devcontainer_json=devcontainer_json,
-        docker_file=docker_file,
-        sample_script=sample_script,
-        headers=headers,
-    )
+    try:
+        commit_files_to_branch(
+            repo_owner=username,
+            repo_name=repo_name,
+            new_branch_name=new_branch_name,
+            devcontainer_json_content=devcontainer_json,
+            dockerfile_content=docker_file,
+            sample_script_content=sample_script,
+            headers=headers,
+        )
+    except CommitToBranchError as e:
+        logger.error(f"{e}")
+        raise CommitToBranchError(
+            f"Error committing files to the branch {new_branch_name} in the repository {repo_name}."
+        )
     logger.success("Branch created and committed files")
 
     # Create a new Codespace using the new branch
-    codespace_id = create_codespace(
-        username, repo_name, new_branch_name, headers
-    )
-    logger.success(f"Created Codespace ID: {codespace_id}")
+    try:
+        codespace_id = create_new_github_codespace(
+            repo_owner=username,
+            repo_name=repo_name,
+            new_branch_name=new_branch_name,
+            headers=headers,
+        )
+    except CodeSpaceCreationError as e:
+        logger.error(f"{e}")
+        raise CodeSpaceCreationError(
+            f"Error creating the Codespace for the branch {new_branch_name} in the repository {repo_name}."
+        )
 
     return codespace_id
 
 
 if __name__ == "__main__":
-    create_codespace_with_files(
-        username=DEFAULT_USERNAME,
-        access_token=DEFAULT_ACCESS_TOKEN,
-        repo_url=DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
-        docker_file=DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE,
-        devcontainer_json=DEFAULT_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
-        sample_script=DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
-    )
-
+    test_with_defaults = False
+    try:
+        if test_with_defaults == True:
+            create_codespace_with_files(
+                username=DEFAULT_USERNAME,
+                access_token=DEFAULT_ACCESS_TOKEN,
+                repo_url=NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE,
+                docker_file=NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE,
+                devcontainer_json=NF_TO_FLYTE_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+                sample_script=NF_TO_FLYTE_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
+            )
+        else:
+            create_codespace_with_files(
+                username=DEFAULT_USERNAME,
+                access_token=DEFAULT_ACCESS_TOKEN,
+                repo_url=DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
+                docker_file=DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE,
+                devcontainer_json=DEFAULT_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+                sample_script=DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
+            )
+    except MissingCredentialsError as e:
+        logger.error(f"{e}")
+        exit(1)
+    except RepoForkError as e:
+        logger.error(f"{e}")
+        exit(1)
+    except BranchCreationError as e:
+        logger.error(f"{e}")
+        exit(1)
+    except CommitToBranchError as e:
+        logger.error(f"{e}")
+        exit(1)
+    except CodeSpaceCreationError as e:
+        logger.error(f"{e}")
+        exit(1)
