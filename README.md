@@ -130,6 +130,13 @@ Here is a list of prerequisites you need to install before you can start using t
 1. First, Fork/Clone the repository.
 
 2. Export the following API keys:
+
+  your `SUPABASE_URL` and `SUPABASE_ANON_KEY`k from your [Supabase account](https://app.supabase.io/)
+
+  ```bash
+  export SUPABASE_URL=<your-supabase-url>
+  export SUPABASE_ANON_KEY=<your-supabase-anon-key>
+  ```
   
   your [OpenAI API key](https://platform.openai.com/account/api-keys)
   
@@ -277,6 +284,10 @@ If you navigate to the [GitHub Codespaces Dashboard](https://github.com/codespac
 
 
 <img src="assets/images/codespace_screenshot.png" alt="final-page" height="100"  id="initial-page-final">
+
+And if you load the codespace, you should be able to access it through VSCode or in the browser
+
+<img src="assets/images/example_codespaces.png" alt="in-the-codespace-page" height="250"  id="in-the-codespace">
 
 <!-- ROADMAP -->
 ## Roadmap
