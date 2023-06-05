@@ -2,10 +2,11 @@
 import base64
 import json
 import os
-import random
 from time import sleep
+import time
 import requests
 
+import ipdb
 from loguru import logger
 from requests import Response
 from typing import Any, Dict, Tuple
@@ -73,9 +74,7 @@ class CodeSpaceCreationError(Exception):
         super().__init__(self.message)
 
 
-def check_if_repo_exists(
-    repo_owner: str, repo_name: str, headers
-) -> bool:
+def check_if_repo_exists(repo_owner: str, repo_name: str, headers) -> bool:
     """Check if a repo exists via GET request to GitHub API."""
     repositories_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}"
     repo_response = requests.get(repositories_url, headers=headers)
@@ -136,7 +135,9 @@ def fork_repository(
         else:
             logger.warning("Error forking the repository.")
 
-        logger.error(f"Status code: {fork_response.status_code}", )
+        logger.error(
+            f"Status code: {fork_response.status_code}",
+        )
         logger.error(f"Error message: {fork_response.json()}")
     return int(fork_response.status_code), fork_response.json()
 
@@ -348,21 +349,23 @@ def create_new_github_codespace(
         # Poll the Codespace's status until it becomes 'available'
         codespace_id = codespace["id"]
         logger.trace(f"GitHub Codespace ID: {codespace_id}")
-        logger.trace(f"GitHub Codespace info:\n {json.dumps(codespace, indent=4)}")
+        logger.trace(
+            f"GitHub Codespace info:\n {json.dumps(codespace, indent=4)}"
+        )
 
         codespace_status = codespace["state"]
         logger.info(f"Codespace Status: {codespace_status}")
+        
+        while codespace_status != 'Available':
+            time.sleep(10)
+            codespace_response = requests.get(f'{api_base_url}/{codespace_id}', headers=headers)
+            codespace = codespace_response.json()
+            ipdb.set_trace()
+            codespace_status = codespace['state']
+            logger.info(f"Current Codespace status: {codespace_status}")
+        
+        logger.success(f"Codespace is available! ID: {codespace_id}")
         return codespace_id
-        # while codespace_status != 'Available':
-        #    time.sleep(10)
-        #    codespace_response = requests.get(f'{api_base_url}/{codespace_id}', headers=headers)
-        #    codespace = codespace_response.json()
-        #    import ipdb
-        #    ipdb.set_trace()
-        #    codespace_status = codespace['state']
-        #    logger.info(f"Current Codespace status: {codespace_status}")
-        #
-        # logger.success(f"Codespace is available! ID: {codespace_id}")
 
     else:
         logger.error("Error creating the Codespace.")
@@ -432,7 +435,9 @@ def create_codespace_with_files(
                 forked_repo["message"]
                 == "Resource not accessible by personal access token"
             ):
-                logger.error("You do not have permissions to fork this repository.")
+                logger.error(
+                    "You do not have permissions to fork this repository."
+                )
                 logger.error(
                     "GitHub returned the following error message: ",
                     forked_repo,
@@ -452,7 +457,9 @@ def create_codespace_with_files(
         logger.info(f"Repository with the name {repo_name} already exists.")
 
     # Create a new branch in the forked repository
-    new_branch_name = "devcontainer-setup-" + str(random.randint(1, 1000))
+    new_branch_name = f"devcontainer-setup-" + str(
+        int.from_bytes(os.urandom(3), byteorder="big")
+    )
     try:
         create_new_branch(
             username=username,
