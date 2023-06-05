@@ -65,7 +65,6 @@ async def create_dev_environment(request: Request) -> Dict[str, bool]:
 
     logger.debug(f"GitHub Repo URL: {githubRepoUrl}", )
     logger.debug(f"email: {email}")
-    logger.debug(f"access_token: {access_token}")
 
     if not (githubRepoUrl and email and access_token):
         raise HTTPException(status_code=400, detail="Missing required fields.")
