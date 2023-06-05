@@ -45,16 +45,15 @@ from .prompts import (
 # and if it doesn't exist, set it to the default value
 broker = os.environ["CELERY_BROKER_URL"]
 
+# set broker_pool_limit to 1 to prevent connection errors
+# celery_app.conf.broker_pool_limit = 1
+# celery_app.conf.broker_connection_max_retries = 50
 os.environ.setdefault("BROKER_POOL_LIMIT", "1")
 
 celery_app = Celery(
     "tasks",
     broker=os.environ["CELERY_BROKER_URL"],
 )
-
-# set broker_pool_limit to 1 to prevent connection errors
-# celery_app.conf.broker_pool_limit = 1
-# celery_app.conf.broker_connection_max_retries = 50
 
 celery_logger = get_task_logger(__name__)
 
@@ -88,13 +87,12 @@ def send_postmark_email(email: str, github_url: str) -> bool:
 def create_development_environment(
     github_repo_url: str,
     user_email: str,
-    github_access_token: str,
+    github_access_token: str = os.environ.get("GH_ACCESS_TOKEN", ""),
     username: str = "matthew-mcateer",
     send_email: bool = False,
 ) -> str:
     logger.info("Creating development environment")
     try:
-        github_access_token = os.environ.get("GH_ACCESS_TOKEN",github_access_token)
         if github_repo_url == "":
             return "Error: No repo url provided"
         if github_access_token == "":
@@ -137,9 +135,7 @@ def create_development_environment(
             devcontainer_string = get_code_block_openai(PROMPT_DEVCONTAINER)
 
             # Get sample script
-            prompt_sample_script = get_sample_script_prompt(
-                PROMPT_DEVCONTAINER
-            )
+            prompt_sample_script = get_sample_script_prompt(PROMPT_DEVCONTAINER)
             sample_script_string = get_code_block_openai(prompt_sample_script)
 
             # Fork a repo and create codespace on top of that
