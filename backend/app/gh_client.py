@@ -456,7 +456,7 @@ def create_codespace_with_files(
         logger.info(f"Repository with the name {repo_name} already exists.")
 
     # Create a new branch in the forked repository
-    new_branch_name = f"devcontainer-setup-" + str(
+    new_branch_name = "devcontainer-setup-" + str(
         int.from_bytes(os.urandom(3), byteorder="big")
     )
     try:
