@@ -108,7 +108,7 @@ def check_if_repo_exists(repo_owner: str, repo_name: str, headers) -> bool:
 
 
 def fork_repository(
-    username: str, repo_owner: str, repo_name: str, headers
+    repo_owner: str, repo_name: str, headers
 ) -> Tuple[int, Dict[str, Any]]:
     """Fork a repository using the GitHub API."""
     fork_api_url = (
