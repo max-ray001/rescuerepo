@@ -114,7 +114,7 @@ def fork_repository(
     fork_api_url = (
         f"https://api.github.com/repos/{repo_owner}/{repo_name}/forks"
     )
-    fork_response = requests.post(fork_api_url, headers=headers)
+   
     # Define the required parameters
     fork_data = {"name": repo_name, "default_branch_only": True}
     # Send the POST request
