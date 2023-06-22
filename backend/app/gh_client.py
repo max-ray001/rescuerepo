@@ -202,7 +202,6 @@ def commit_files_to_branch(
     # Get default branch and its commit SHA
     repo_info = requests.get(api_base_url, headers=headers).json()
     logger.trace(f"{repo_info}")
-    default_branch = repo_info["default_branch"]
     default_branch_sha = requests.get(
         f"{api_base_url}/git/ref/heads/master", headers=headers
     ).json()["object"]["sha"]
