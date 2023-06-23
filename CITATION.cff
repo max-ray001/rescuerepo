@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as below."
+authors:
+- family-names: "Matthew"
+  given-names: "McAteer"
+- family-names: "Malik"
+  given-names: "Dhruv"
+- family-names: "Lai"
+  given-names: "Joyce"
+- family-names: "Kholinm"
+  given-names: "Savelii"
+- family-names: "Shubhamai"
+  given-names: "Shubhamai"
+- family-names: "Mandefro"
+  given-names: "Ashenafee"
+title: "Bio x ML Hackathon: Resurrection Squad"
+date-released: 2023-06-04
+url: "https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad"
