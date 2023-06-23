@@ -2,7 +2,7 @@
 name: Question or comment about the project
 about: Have a general question or comment about the project? Ask it here!
 title: ''
-labels: ''
+labels: 'question'
 assignees: ''
 
 ---
@@ -18,8 +18,8 @@ The question or comment is about:
 * [ ] Interacting with the UI
 * [ ] Interacting with OpenAI
 * [ ] Interacting with Anthropic
-* [ ] Cloning the repository
-* [ ] Forking the cloned repository
+* [ ] Automatically cloning the repository of the provided URL
+* [ ] Automatically forking the cloned repository
 * [ ] Starting the GitHub Codespace
 * [ ] GitHub Codespace qualty
 * [ ] Email Alerts for the status

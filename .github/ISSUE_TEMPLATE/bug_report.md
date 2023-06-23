@@ -2,7 +2,7 @@
 name: Bug report
 about: Submit a report to help us improve the project
 title: ''
-labels: ''
+labels: 'bug'
 assignees: ''
 
 ---
@@ -17,8 +17,8 @@ The problem arises in step:
 * [ ] Interacting with the UI
 * [ ] Interacting with OpenAI
 * [ ] Interacting with Anthropic
-* [ ] Cloning the repository
-* [ ] Forking the cloned repository
+* [ ] Automatically cloning the repository of the provided URL
+* [ ] Automatically forking the cloned repository
 * [ ] Starting the GitHub codespace
 * [ ] GitHub Codespace qualty
 * [ ] Email Alerts for the status
