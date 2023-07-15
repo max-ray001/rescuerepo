@@ -28,23 +28,23 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad">
+  <a href="https://github.com/matthew-mcateer/rescuerepo">
     <img src="https://pbs.twimg.com/media/FwRmQurakAAZBhD?format=jpg&name=4096x4096" alt="hackathon-cover" height="200"  id="hackathon-cover">
   </a>
 
-<h3 align="center">BioMLHackathon ResurrectionSquad</h3>
+<h3 align="center">RescueRepo</h3>
 
   <p align="center">
-    Project for the <a href="https://hackathon.bio/">Bio X AI Hackathon</a>. All about resurrecting old abandonware repos, and reducing the effort to get them up and running again.
+    Project originally built for the <a href="https://hackathon.bio/">Bio X AI Hackathon</a>. All about resurrecting old abandonware repos, and reducing the effort to get them up and running again.
     <br />
-    <a href="https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/matthew-mcateer/rescuerepo"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="#usage">View Demo</a>
     ·
-    <a href="https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad/issues">Report Bug</a>
+    <a href="https://github.com/matthew-mcateer/rescuerepo/issues">Report Bug</a>
     ·
-    <a href="https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad/issues">Request Feature</a>
+    <a href="https://github.com/matthew-mcateer/rescuerepo/issues">Request Feature</a>
   </p>
 </div>
 
@@ -308,7 +308,7 @@ The scope of this project is admittedly quite large, so we've broken it down int
   - 🚧 MATLAB-to-Python Translaton
 - 🚧 Improving the UI/UX of the above.
 
-See the [open issues](https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/matthew-mcateer/rescuerepo/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -341,7 +341,7 @@ Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information
 
 Matthew Mcateer (Author) - [@MatthewMcAteer0](https://twitter.com/MatthewMcAteer0) - bioml@5cubelabs.us
 
-Project Link: [https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad](https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad)
+Project Link: [https://github.com/matthew-mcateer/rescuerepo](https://github.com/matthew-mcateer/rescuerepo)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -351,8 +351,8 @@ Project Link: [https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSqu
 
 We'd like to thank everyone for their contributions to this project and the hackathon.
 
-<a href="https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=matthew-mcateer/BioMLHackathon_ResurrectionSquad" />
+<a href="https://github.com/matthew-mcateer/rescuerepo/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=matthew-mcateer/rescuerepo" />
 </a>
 
 <a href="https://github.com/asapsav">
@@ -382,37 +382,37 @@ We would also like to thank the organizers of the [Bio X AI Hackathon](https://h
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/matthew-mcateer/BioMLHackathon_ResurrectionSquad.svg?style=for-the-badge
-[contributors-url]: https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/matthew-mcateer/BioMLHackathon_ResurrectionSquad.svg?style=for-the-badge
-[forks-url]: https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad/network/members
-[stars-shield]: https://img.shields.io/github/stars/matthew-mcateer/BioMLHackathon_ResurrectionSquad.svg?style=for-the-badge
-[stars-url]: https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad/stargazers
-[issues-shield]: https://img.shields.io/github/issues/matthew-mcateer/BioMLHackathon_ResurrectionSquad.svg?style=for-the-badge
-[issues-url]: https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad/issues
-[license-shield]: https://img.shields.io/github/license/matthew-mcateer/BioMLHackathon_ResurrectionSquad.svg?style=for-the-badge
-[license-url]: https://github.com/matthew-mcateer/BioMLHackathon_ResurrectionSquad/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/matthew-mcateer/rescuerepo.svg?style=for-the-badge
+[contributors-url]: https://github.com/matthew-mcateer/rescuerepo/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/matthew-mcateer/rescuerepo.svg?style=for-the-badge
+[forks-url]: https://github.com/matthew-mcateer/rescuerepo/network/members
+[stars-shield]: https://img.shields.io/github/stars/matthew-mcateer/rescuerepo.svg?style=for-the-badge
+[stars-url]: https://github.com/matthew-mcateer/rescuerepo/stargazers
+[issues-shield]: https://img.shields.io/github/issues/matthew-mcateer/rescuerepo.svg?style=for-the-badge
+[issues-url]: https://github.com/matthew-mcateer/rescuerepo/issues
+[license-shield]: https://img.shields.io/github/license/matthew-mcateer/rescuerepo.svg?style=for-the-badge
+[license-url]: https://github.com/matthew-mcateer/rescuerepo/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/matthewmcateer0
 [product-screenshot]: assets/images/initial_page.png
-[maintainability-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=sqale_rating&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
+[maintainability-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=sqale_rating
 [maintainability-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
-[technical-debt-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=sqale_index&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
+[technical-debt-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=sqale_index
 [technical-debt-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
-[lines-of-code-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=ncloc&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
+[lines-of-code-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=ncloc
 [lines-of-code-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
-[code-smells-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=code_smells&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
+[code-smells-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=code_smells
 [code-smells-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
-[security-rating-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=security_rating&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
+[security-rating-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=security_rating
 [security-rating-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
-[bugs-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=bugs&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
+[bugs-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=bugs
 [bugs-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
-[vulnerabilities-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=vulnerabilities&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
+[vulnerabilities-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=vulnerabilities
 [vulnerabilities-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
-[duplicated-lines-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=duplicated_lines_density&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
+[duplicated-lines-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=duplicated_lines_density
 [duplicated-lines-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
-[reliability-rating-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=reliability_rating&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0
+[reliability-rating-shield]: https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=reliability_rating
 [reliability-rating-url]: https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad
 
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=alert_status&token=66977d9ef0e5c09edcb0f2e539ffad0ce2c328e0)](https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=matthew-mcateer_BioMLHackathon_ResurrectionSquad&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=matthew-mcateer_BioMLHackathon_ResurrectionSquad)
