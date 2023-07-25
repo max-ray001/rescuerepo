@@ -47,6 +47,7 @@ async def index() -> FileResponse:
 
     return FileResponse("../frontend/build/index.html")
 
+#@app.get("/healthz", status_code=200)
 #async def healthz() -> Dict[str, str]:
 #    # Return a 200 response to indicate that the application is healthy.
 #    return {"status": "ok"}

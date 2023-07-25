@@ -108,13 +108,13 @@ def check_if_repo_exists(repo_owner: str, repo_name: str, headers) -> bool:
 
 
 def fork_repository(
-    repo_owner: str, repo_name: str, headers
+    username: str, repo_owner: str, repo_name: str, headers
 ) -> Tuple[int, Dict[str, Any]]:
     """Fork a repository using the GitHub API."""
     fork_api_url = (
         f"https://api.github.com/repos/{repo_owner}/{repo_name}/forks"
     )
-   
+    fork_response = requests.post(fork_api_url, headers=headers)
     # Define the required parameters
     fork_data = {"name": repo_name, "default_branch_only": True}
     # Send the POST request
@@ -202,6 +202,7 @@ def commit_files_to_branch(
     # Get default branch and its commit SHA
     repo_info = requests.get(api_base_url, headers=headers).json()
     logger.trace(f"{repo_info}")
+    default_branch = repo_info["default_branch"]
     default_branch_sha = requests.get(
         f"{api_base_url}/git/ref/heads/master", headers=headers
     ).json()["object"]["sha"]
@@ -456,7 +457,7 @@ def create_codespace_with_files(
         logger.info(f"Repository with the name {repo_name} already exists.")
 
     # Create a new branch in the forked repository
-    new_branch_name = "devcontainer-setup-" + str(
+    new_branch_name = f"devcontainer-setup-" + str(
         int.from_bytes(os.urandom(3), byteorder="big")
     )
     try:
