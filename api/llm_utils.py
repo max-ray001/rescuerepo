@@ -3,7 +3,7 @@ import os
 import re
 
 from loguru import logger
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import openai
 
@@ -52,7 +52,7 @@ def extract_code_blocks_from_llm_output(text: str) -> List[str]:
 
 def get_code_block_openai(
     prompt: str, model: str = "gpt-3.5-turbo-0301" # Switch to "gpt-4-32k" if you can
-) -> str:
+) -> Union[str, None]:
     # Ensure the user is authenticated
     if not openai.api_key:
         raise ValueError(
@@ -70,7 +70,7 @@ def get_code_block_openai(
     }
 
     try:
-        logger.info(f"Sending request to OpenAI API")
+        logger.info("Sending request to OpenAI API")
         logger.debug(f"Using the following parameters:\n  Model:\n{model}\n  Prompt:\n{prompt}")
 
         # Make the API request
@@ -104,25 +104,15 @@ def get_code_block_openai(
 
 def get_code_block_anthropic(
     prompt: str, model: str = "claude-v1.3-100k", #@param ["claude-v1.3","claude-v1.3-100k","claude-v1.2","claude-v1.0"]
-) -> str:
+) -> Union[str, None]:
     
     anthropic_chat = ChatAnthropic(
         model=model,
         anthropic_api_key=os.environ["ANTHROPIC_API_KEY"]
     )
 
-    # Set up the API request
-    data = {
-        "model": model,
-        "messages": [{"role": "user", "content": prompt}],
-        "max_tokens": 150,
-        "n": 1,
-        "stop": None,
-        "temperature": 1.0,
-    }
-
     try:
-        logger.info(f"Sending request to Anthropic Claude API")
+        logger.info("Sending request to Anthropic Claude API")
         logger.debug(f"Using the following parameters:\n  Model:\n{model}\n  Prompt:\n{prompt}")
 
         # Make the API request

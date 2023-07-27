@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from .few_shot_examples import DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE
 
-PROMPT_DEVCONTAINER = f"""
+PROMPT_DEVCONTAINER = """
 Based on what you know about dev containers, here are some reference pages
 https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/introduction-to-dev-containers
 https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/setting-up-your-python-project-for-codespaces.

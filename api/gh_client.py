@@ -18,10 +18,10 @@ from .few_shot_examples import (
     DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
     DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
     DEFAULT_USERNAME,
-    NF_TO_FLYTE_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
-    NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE,
-    NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE,
-    NF_TO_FLYTE_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
+    LUCIDRAINS_PROGEN_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+    LUCIDRAINS_PROGEN_DOCKERFILE_FEW_SHOT_EXAMPLE,
+    LUCIDRAINS_PROGEN_REPO_URL_FEW_SHOT_EXAMPLE,
+    LUCIDRAINS_PROGEN_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
 )
 
 
@@ -111,10 +111,11 @@ def fork_repository(
     username: str, repo_owner: str, repo_name: str, headers
 ) -> Tuple[int, Dict[str, Any]]:
     """Fork a repository using the GitHub API."""
+    assert username is not None, "Username cannot be None"
     fork_api_url = (
         f"https://api.github.com/repos/{repo_owner}/{repo_name}/forks"
     )
-    fork_response = requests.post(fork_api_url, headers=headers)
+    _ = requests.post(fork_api_url, headers=headers)
     # Define the required parameters
     fork_data = {"name": repo_name, "default_branch_only": True}
     # Send the POST request
@@ -158,8 +159,8 @@ def create_new_branch(
     branches = branches_response.json()
 
     main_branch_sha = None
-    for branch in branches:
-        logger.trace(f"{branch}")
+    for i, branch in enumerate(branches):
+        logger.trace(f"Branch number {i}: {branch}")
         if branch["ref"] == "refs/heads/main":
             main_branch_sha = branch["object"]["sha"]
             break
@@ -167,11 +168,16 @@ def create_new_branch(
     if not main_branch_sha:
         logger.error("Error: Couldn't find the main branch.")
         return
+    else:
+        logger.info(f"Main branch SHA: {main_branch_sha}")
 
     new_branch_data: dict[str, Any] = {
         "ref": f"refs/heads/{new_branch_name}",
         "sha": main_branch_sha,
     }
+    logger.debug(f"New branch data: {new_branch_data}")
+    logger.debug(f"POSTing to {branches_api_url}")
+    logger.debug(f"Headers for new branch: {headers}")
 
     new_branch_response: Response = requests.post(
         branches_api_url, headers=headers, json=new_branch_data
@@ -201,11 +207,16 @@ def commit_files_to_branch(
     sleep(10)
     # Get default branch and its commit SHA
     repo_info = requests.get(api_base_url, headers=headers).json()
-    logger.trace(f"{repo_info}")
+    logger.trace(f"Repo Info: {repo_info}")
     default_branch = repo_info["default_branch"]
-    default_branch_sha = requests.get(
-        f"{api_base_url}/git/ref/heads/master", headers=headers
-    ).json()["object"]["sha"]
+    logger.trace(f"Repo Info [default_branch]: {default_branch}")
+    # TODO: Check if the default branch is main or master, after all there are some really old repos out there
+    default_branch_response_json = requests.get(
+        f"{api_base_url}/git/ref/heads/main", headers=headers
+    ).json()
+    logger.trace(f"Repo Info [default_branch_response_json]: {default_branch_response_json}")
+    default_branch_sha = default_branch_response_json["object"]["sha"]
+    logger.trace(f"Repo Info [default_branch_sha]: {default_branch_sha}")
 
     devcontainer_json_blob_sha = requests.post(
         f"{api_base_url}/git/blobs",
@@ -242,7 +253,7 @@ def commit_files_to_branch(
     latest_commit_tree_sha = requests.get(
         f"{api_base_url}/git/commits/{default_branch_sha}", headers=headers
     ).json()["tree"]["sha"]
-    logger.info(f"Latest commit tree SHA: {latest_commit_tree_sha}")
+    logger.debug(f"Latest commit tree SHA: {latest_commit_tree_sha}")
 
     # Create a new tree with the new blobs
     new_tree_response = requests.post(
@@ -455,11 +466,15 @@ def create_codespace_with_files(
 
     else:
         logger.info(f"Repository with the name {repo_name} already exists.")
+    
+    logger.info("Sleeping for 10 seconds to allow GitHub to process the fork request")
+    time.sleep(10)
 
     # Create a new branch in the forked repository
-    new_branch_name = f"devcontainer-setup-" + str(
+    new_branch_name = "devcontainer-setup-" + str(
         int.from_bytes(os.urandom(3), byteorder="big")
     )
+    logger.info(f"Creating a new branch: {new_branch_name}")
     try:
         create_new_branch(
             username=username,
@@ -509,18 +524,20 @@ def create_codespace_with_files(
 
 
 if __name__ == "__main__":
-    test_with_defaults = False
+    test_with_defaults = True
     try:
         if test_with_defaults == True:
+            logger.debug("Testing with default values")
             create_codespace_with_files(
                 username=DEFAULT_USERNAME,
                 access_token=DEFAULT_ACCESS_TOKEN,
-                repo_url=NF_TO_FLYTE_REPO_URL_FEW_SHOT_EXAMPLE,
-                docker_file=NF_TO_FLYTE_DOCKERFILE_FEW_SHOT_EXAMPLE,
-                devcontainer_json=NF_TO_FLYTE_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
-                sample_script=NF_TO_FLYTE_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
+                repo_url=LUCIDRAINS_PROGEN_REPO_URL_FEW_SHOT_EXAMPLE,
+                docker_file=LUCIDRAINS_PROGEN_DOCKERFILE_FEW_SHOT_EXAMPLE,
+                devcontainer_json=LUCIDRAINS_PROGEN_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
+                sample_script=LUCIDRAINS_PROGEN_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
             )
         else:
+            logger.debug("Running tests with custom values")
             create_codespace_with_files(
                 username=DEFAULT_USERNAME,
                 access_token=DEFAULT_ACCESS_TOKEN,
