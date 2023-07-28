@@ -29,7 +29,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/matthew-mcateer/rescuerepo">
-    <img src="https://pbs.twimg.com/media/FwRmQurakAAZBhD?format=jpg&name=4096x4096" alt="hackathon-cover" height="200"  id="hackathon-cover">
+    <img src="assets/images/screenshot_frontend.png" alt="hackathon-cover" height="200"  id="hackathon-cover">
   </a>
 
 <h3 align="center">RescueRepo</h3>
@@ -81,8 +81,6 @@
 
 ## About The Project
 
-<img src="https://pbs.twimg.com/media/FwRmQurakAAZBhD?format=jpg&name=4096x4096" alt="hackathon-cover" height="500"  id="hackathon-cover-big">
-
 
 A project built for resurrecting the countless abandonware repos littering GitHub.
 The goal is to make it easier to turn any repo, no matter how old, and turn it into a working GitHub Codespace.
@@ -103,9 +101,8 @@ The goal is to make it easier to turn any repo, no matter how old, and turn it i
 * [Postmark](https://postmarkapp.com/)
 * [Celery](https://docs.celeryq.dev/en/stable/getting-started/first-steps-with-celery.html#first-steps)
 * [RabbitMQ](https://www.rabbitmq.com/)
-* [Heroku](https://www.heroku.com/)
 
-<img src="assets/images/BioML_Hackathon_Blueprint.png" alt="architecture-image" height="350"  id="architecture-image">
+<img src="assets/images/diagram_architecture.png" alt="architecture-image" height="350"  id="architecture-image">
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -129,7 +126,19 @@ Here is a list of prerequisites you need to install before you can start using t
 
 1. First, Fork/Clone the repository.
 
-2. Export the following API keys:
+  Using HTTPS:
+
+  ```bash
+  git clone https://github.com/matthew-mcateer/rescuerepo.git
+  ```
+
+  or using the [GitHub CLI](https://cli.github.com/):
+
+  ```bash
+  gh repo clone matthew-mcateer/rescuerepo
+  ```
+
+2. Obtain the following API keys, and put them in a `.env` file in the `api` directory of the project. You can use the [api/.env.example](api/.env.example) file as a template.
 
   your `SUPABASE_URL` and `SUPABASE_ANON_KEY`k from your [Supabase account](https://app.supabase.io/)
 
@@ -187,7 +196,7 @@ Here is a list of prerequisites you need to install before you can start using t
   <summary><b>Getting your </b><code>CELERY_BROKER_URL</code><b> (click to expand)</b></summary>
 
   If you're using [RabbitMQ](http://www.rabbitmq.com/download.html), you can use `export CELERY_BROKER_URL=pyamqp://guest@localhost//`.
-  The demo version of this project is using a [CloudAMQP](https://www.cloudamqp.com/) instance from Heroku (the free "Little Lemur" tier).
+  The demo version of this project is using a [CloudAMQP](https://www.cloudamqp.com/) instance from Heroku (the [free "Little Lemur"](https://www.cloudamqp.com/plans.html) tier).
 
   Or if you're using redis, you can use `docker run -d -p 6379:6379 redis && export CELERY_BROKER_URL=redis://localhost:6379/0`.
 
@@ -206,6 +215,11 @@ Here is a list of prerequisites you need to install before you can start using t
 
   </details>
 
+3. Once you've added your API keys to the file `api/.env`, you can set the environment variable with the following command:
+
+  ```bash
+  $ export $(cat api/.env | xargs)
+  ```
 
 3. Install the python dependencies.
 
@@ -215,32 +229,31 @@ Here is a list of prerequisites you need to install before you can start using t
   (env)$ pip install -r requirements.txt
   ```
 
-4. Make sure that you have `npx` installed:
+4. Make sure that you have `npx` installed, and install the frontend dependencies:
     
   ```bash
   $ npm install -g npx
+  $ npm install
   ```
 
-5. Install the frontend dependencies:
-
-  ```bash
-  $ npm i 
-  $ npm run build
-  ```
-
-6. _(OPTIONAL)_ Start up the Celery worker in one terminal window (your **1st**):
+5. _(OPTIONAL):_ Start up the Celery worker in one terminal window (separate from the one in the next step):
 
   ```bash
   $ (env)$ celery --app api.tasks worker --loglevel INFO
   ```
 
-7. In a **2nd** terminal windown, run the NextJS front-end (which concurrently starts up the server-side FastAPI backend):
+6. In a terminal window, run the NextJS front-end (which concurrently starts up the server-side FastAPI backend):
 
   ```bash
-  $ npm install
-  $ npm run start
+  $ npm run dev
   ```
-  _**Navigate to [http://localhost:3000](http://localhost:3000) to see the app running in your browser.**_ Alternatively, navigate to [http://localhost:8000/api/docs](http://localhost:8000/api/docs) to see the FastAPI docs.
+7. _**Navigate to [http://localhost:3000](http://localhost:3000) to see the app running in your browser.**_ 
+
+<img src="assets/images/screenshot_frontend.png" alt="frontend-view" height="250"  id="frontend-view">
+ 
+8. _(OPTIONAL):_ navigate to [http://localhost:8000/api/docs](http://localhost:8000/api/docs) to see the FastAPI docs.
+
+<img src="assets/images/screenshot_backend.png" alt="backend-view" height="250" id="backend-view">
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -251,17 +264,15 @@ Here is a list of prerequisites you need to install before you can start using t
 
 In order to start this project locally, you'll need to start the frontend and then the backend.
 
-<img src="assets/images/initial_page.png" alt="project-page" height="100"  id="project-page-big">
-
 First, follow the [installation](#installation) instructions above.
 
 Navigate to [http://localhost:3000](http://localhost:3000) to see the app running in your browser.
 
 Sign into GitHub, after which you'll be greeted with the below page.
 
-<img src="assets/images/post_sign_in.png" alt="initial-page" height="100"  id="initial-page-next">
+<img src="assets/images/screenshot_frontend.png" alt="initial-page" height="100"  id="initial-page-next">
 
-You can enter in a GitHub repo URL of your choice. At the moment the default is `https://github.com/richard-peacock/sequence_record_parsing`.
+You can enter in a GitHub repo URL of your choice. At the moment the default is `https://github.com/lucidrains/progen`.
 
 Include with this information your GitHub Access token (make sure it has the `repos` and `codespaces` scopes enabled), as well as your email. 
 
@@ -270,11 +281,11 @@ This will trigger the creation of the GitHub codespace.
 If you navigate to the [GitHub Codespaces Dashboard](https://github.com/codespaces), you should see it being created (will resemble the below).
 
 
-<img src="assets/images/codespace_screenshot.png" alt="final-page" height="100"  id="initial-page-final">
+<img src="assets/images/screenshot_githubcodespace.png" alt="final-page" height="100"  id="initial-page-final">
 
 And if you load the codespace, you should be able to access it through VSCode or in the browser
 
-<img src="assets/images/example_codespaces.png" alt="in-the-codespace-page" height="250"  id="in-the-codespace">
+<img src="assets/images/screenshot_example_codespaces.png" alt="in-the-codespace-page" height="250"  id="in-the-codespace">
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -346,10 +357,6 @@ We'd like to thank everyone for their contributions to this project and the hack
   <img src="https://github.com/asapsav.png?size=50">
 </a>
 
-<a href="https://github.com/lai-joyce">
-  <img src="https://github.com/lai-joyce.png?size=50">
-</a>
-
 
 We would also like to thank the organizers of the [Bio X AI Hackathon](https://hackathon.bio/) for putting on such a great event.
 
@@ -362,6 +369,8 @@ We would also like to thank the organizers of the [Bio X AI Hackathon](https://h
 * [Anton Troynikov](https://twitter.com/atroyn) - [Chroma](https://docs.trychroma.com/)
 * [Lan Jiang](https://www.luxcapital.com/people/lan-jiang) - [Lux Capital](https://www.luxcapital.com/)
 * [Joshua Meier](https://twitter.com/joshim5) - [AbSci](https://www.absci.com/)
+
+<img src="https://pbs.twimg.com/media/FwRmQurakAAZBhD?format=jpg&name=4096x4096" alt="hackathon-cover" height="500"  id="hackathon-cover-big">
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
