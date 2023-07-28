@@ -207,10 +207,9 @@ Here is a list of prerequisites you need to install before you can start using t
   </details>
 
 
-1. Install the python dependencies.
+3. Install the python dependencies.
 
   ```bash
-  $ cd backend
   $ python3.9 -m venv env
   $ source env/bin/activate
   (env)$ pip install -r requirements.txt
@@ -222,39 +221,27 @@ Here is a list of prerequisites you need to install before you can start using t
   $ npm install -g npx
   ```
 
-5. Enter the `frontend` directory and install the frontend dependencies:
+5. Install the frontend dependencies:
 
   ```bash
-  $ cd frontend
   $ npm i 
   $ npm run build
   ```
 
-6. Start up the Celery worker in one terminal window (your **1st**):
+6. _(OPTIONAL)_ Start up the Celery worker in one terminal window (your **1st**):
 
   ```bash
-  $ cd backend
-  $ (env)$ celery --app app.tasks worker --loglevel INFO
+  $ (env)$ celery --app api.tasks worker --loglevel INFO
   ```
 
-7. In a **2nd** terminal windown, run the server-side FastAPI app:
+7. In a **2nd** terminal windown, run the NextJS front-end (which concurrently starts up the server-side FastAPI backend):
 
   ```bash
-  $ cd backend
-  $ (env)$ python main.py
-  ```
-  Navigate to [http://localhost:8000](http://localhost:8000)
-
-
-8. In a **3rd** terminal window, run the client-side React app:
-
-  ```bash
-  $ cd frontend
   $ npm install
   $ npm run start
   ```
-  
-8. _**Navigate to [http://localhost:3000](http://localhost:3000) to see the app running in your browser.**_
+  _**Navigate to [http://localhost:3000](http://localhost:3000) to see the app running in your browser.**_ Alternatively, navigate to [http://localhost:8000/api/docs](http://localhost:8000/api/docs) to see the FastAPI docs.
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
