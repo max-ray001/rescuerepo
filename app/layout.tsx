@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: 'RescueRepo',
-  description: 'resurrecting old abandonware repos, and reducing the effort to get them up and running again.',
+  description: 'Resurrecting old abandonware repos, and reducing the effort to get them up and running again.',
   keywords: [
     'ai',
     'ml',
@@ -51,17 +51,18 @@ export const metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://github.com/matthew-mcateer/rescuerepo',
+    siteName: 'RescueRepo',
   },
-  //twitter: {
-  //  card: 'summary_large_image',
-  //  images: [`${uiUrl}/og.jpg`],
-  //  creator: `@${creator}`,
-  //},
-  //icons: {
-  //  icon: '/favicon.ico',
-  //  shortcut: '/favicon-16x16.png',
-  //  apple: '/apple-touch-icon.png',
-  //},
+  twitter: {
+    card: 'summary_large_image.png',
+    images: [`og.jpg`],
+    creator: `@matthewmcateer0`,
+  },
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon-16x16.png',
+    apple: '/apple-touch-icon.png',
+  },
 }
 
 export default function RootLayout({
