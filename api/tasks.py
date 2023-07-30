@@ -111,7 +111,7 @@ def create_development_environment(
     github_repo_url: str,
     user_email: str,
     github_access_token: str = os.environ.get("GH_ACCESS_TOKEN", ""),
-    username: str = "matthew-mcateer",
+    username: str = os.environ.get("GITHUB_USERNAME"),
     send_email: bool = False,
 ) -> str:
     logger.info("Creating development environment")
@@ -207,8 +207,8 @@ def handle_other_cases(github_repo_url, username, github_access_token):
 def create_dev_environment_task(
     github_repo_url: str,
     user_email: str,
-    github_access_token: str,
-    username: str = "matthew-mcateer",
+    github_access_token: str = os.environ.get("GH_ACCESS_TOKEN", ""),
+    username: str = os.environ.get("GITHUB_USERNAME"),
     send_email: bool = False,
 ) -> str:
     return create_development_environment(

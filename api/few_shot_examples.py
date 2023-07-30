@@ -2,7 +2,7 @@
 import os
 
 DEFAULT_ACCESS_TOKEN = os.environ.get("GH_ACCESS_KEY")
-DEFAULT_USERNAME = "matthew-mcateer"
+DEFAULT_GITHUB_USERNAME = os.environ.get("GITHUB_USERNAME")
 
 # Default few-shot examples
 

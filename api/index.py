@@ -12,7 +12,7 @@ from loguru import logger
 
 from .tasks import create_development_environment, create_dev_environment_task
 
-filepaths = ['backend/app/.env', 'app/.env', 'backend/.env','.env']
+filepaths = ['api/.env', '.env']
 USE_TASK_QUEUE = False
 
 found_path = False
@@ -76,15 +76,16 @@ async def create_dev_environment(request: Request) -> Dict[str, bool]:
 
     logger.debug(f"Data: {data}")
     
-    input_username="matthew-mcateer"
+    input_username = data.get("githubUsername") 
     github_repo_url = data.get("githubRepoUrl")
     email = data.get("email")
     access_token = data.get("githubAccessToken")
 
-    logger.debug(f"GitHub Repo URL: {github_repo_url}", )
+    logger.debug(f"GitHub Repo URL: {github_repo_url}")
+    logger.debug(f"GitHub Username: {github_repo_url}")
     logger.debug(f"email: {email}")
 
-    if not (github_repo_url and email and access_token):
+    if not (github_repo_url and email and access_token and input_username):
         raise HTTPException(status_code=400, detail="Missing required fields.")
     
     if USE_TASK_QUEUE==True:

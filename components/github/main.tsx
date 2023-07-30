@@ -20,7 +20,6 @@ import { Github } from "lucide-react";
 const isDevelopment = false;
 
 let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
-//let githubUsername = process.env.NEXT_PUBLIC_GH_USERNAME!;
 if (isDevelopment) {
   backendUrl = "http://localhost:8000";
 } 
@@ -87,7 +86,7 @@ const GithubComponent = () => {
   }
 };
 
-const SetGithubUrl = (props: { accessToken: any; email: any; }) => {
+const SetGithubUrl = (props: { accessToken: string; email: string; }) => {
   const [githubRepoUrl, setGithubRepoUrl] = useState<string | null>(null);
   const [triggeredGithubUrl, setTriggeredGithubUrl] = useState<string | null>(null);
   
@@ -97,9 +96,10 @@ const SetGithubUrl = (props: { accessToken: any; email: any; }) => {
 
     // TODO: figure out why the props.accessToken is not serving the purpose of the classic scoped GitHub access tokens
     // TODO: figure out way of obtaining github username from supabase or session data
+    let githubUsername = process.env.NEXT_PUBLIC_GITHUB_USERNAME!;
     axios
       .post(backendUrl + "/api/create-dev-environment", {
-        // githubUsername: githubUsername,
+        githubUsername: githubUsername,
         githubRepoUrl: githubRepoUrl,
         githubAccessToken: props.accessToken,
         email: props.email,

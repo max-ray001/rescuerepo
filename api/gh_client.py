@@ -17,7 +17,7 @@ from .few_shot_examples import (
     DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE,
     DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
     DEFAULT_SAMPLE_SCRIPT_FEW_SHOT_EXAMPLE,
-    DEFAULT_USERNAME,
+    DEFAULT_GITHUB_USERNAME,
     LUCIDRAINS_PROGEN_DEVCONTAINER_JSON_FEW_SHOT_EXAMPLE,
     LUCIDRAINS_PROGEN_DOCKERFILE_FEW_SHOT_EXAMPLE,
     LUCIDRAINS_PROGEN_REPO_URL_FEW_SHOT_EXAMPLE,
@@ -529,7 +529,7 @@ if __name__ == "__main__":
         if test_with_defaults == True:
             logger.debug("Testing with default values")
             create_codespace_with_files(
-                username=DEFAULT_USERNAME,
+                username=DEFAULT_GITHUB_USERNAME,
                 access_token=DEFAULT_ACCESS_TOKEN,
                 repo_url=LUCIDRAINS_PROGEN_REPO_URL_FEW_SHOT_EXAMPLE,
                 docker_file=LUCIDRAINS_PROGEN_DOCKERFILE_FEW_SHOT_EXAMPLE,
@@ -539,7 +539,7 @@ if __name__ == "__main__":
         else:
             logger.debug("Running tests with custom values")
             create_codespace_with_files(
-                username=DEFAULT_USERNAME,
+                username=DEFAULT_GITHUB_USERNAME,
                 access_token=DEFAULT_ACCESS_TOKEN,
                 repo_url=DEFAULT_REPO_URL_FEW_SHOT_EXAMPLE,
                 docker_file=DEFAULT_DOCKERFILE_FEW_SHOT_EXAMPLE,
