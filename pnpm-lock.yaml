@@ -12,7 +12,7 @@ dependencies:
     specifier: ^2.29.0
     version: 2.29.0(encoding@0.1.13)
   '@types/node':
-    specifier: 20.2.4
+    specifier: ^20.2.4
     version: 20.2.4
   '@types/react':
     specifier: 18.2.7
